@@ -11,27 +11,19 @@ using Cake.Core.Tooling;
 var context = new MyContext(args); // Extends ICakeContext
 var config = new BuildConfiguration(context);
 var tasks = new Tasks(context, config);
-var printer = new CakeReportPrinter(context.Console, context);
 
-var host = new Cake.Cli.BuildScriptHost(
-    new CakeEngine(context.DataService, context.Log),
-    new DefaultExecutionStrategy(context.Log),
-    context,
-    printer,
-    context.Log);
-
+var host = context.MakeHost();
 host.Setup(ctx => ctx.Information("Setup!"));
-
 tasks.RegisterTasksOn(host);
 
-var report = await host.RunTargetAsync(config.Target);
-
+await host.RunTargetAsync(config.Target);
 context.Information("bye");
 
 public class MyContext : ICakeContext
 {
     public CakeConsole Console { get; private set; }
     public CakeContext CakeContext { get; private set; }
+    public CakeReportPrinter Printer { get; }
     public CakeDataService DataService { get; private set; }
 
     public IFileSystem FileSystem => CakeContext.FileSystem;
@@ -80,7 +72,16 @@ public class MyContext : ICakeContext
             new ProcessRunner(fs, env, log, tools, config),
             new WindowsRegistry(),
             tools, DataService, config);
+
+        Printer = new CakeReportPrinter(Console, CakeContext);
     }
+
+    internal IScriptHost MakeHost() => new Cake.Cli.BuildScriptHost(
+        new CakeEngine(DataService, Log),
+        new DefaultExecutionStrategy(Log),
+        CakeContext,
+        Printer,
+        Log);
 }
 
 public class BuildConfiguration
