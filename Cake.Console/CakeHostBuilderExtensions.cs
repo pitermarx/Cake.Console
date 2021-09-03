@@ -1,26 +1,45 @@
-using System;
 using Cake.Core.Composition;
-using Cake.Core.Packaging;
+using Cake.Core.Scripting;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Cake.Console
 {
     public static class CakeHostBuilderExtensions
     {
-        public static CakeHostBuilder WithNugetTool(this CakeHostBuilder builder, string id, string version)
+        public static CakeHostBuilder InstallNugetTool(this CakeHostBuilder builder, string id, string version)
         {
-            builder.WithTool(new PackageReference(new Uri($"nuget:?package={id}&version={version}")));
+            builder.ConfigureServices(s => s.RegisterInstance(new CakeNugetTool(id, version)).As<ICakeToolReference>());
             return builder;
         }
 
         public static CakeHostBuilder RegisterTasks<T>(this CakeHostBuilder builder) where T : ICakeTasks
         {
-            builder.Configure(s => s.RegisterType(typeof(T)).As<ICakeTasks>());
+            builder.ConfigureServices(s => s.RegisterType<T>().As<ICakeTasks>().Singleton());
             return builder;
         }
 
-        public static void Singleton<T>(this ICakeContainerRegistrar registrar)
+        public static CakeHostBuilder WorkingDirectory<T>(this CakeHostBuilder builder) where T : IWorkingDirectory
         {
-            registrar.RegisterType(typeof(T)).AsSelf().Singleton();
+            builder.ConfigureServices(s => s.RegisterType<T>().As<IWorkingDirectory>().Singleton());
+            return builder;
+        }
+
+        public static CakeHostBuilder ContextData<T>(this CakeHostBuilder builder) where T : class
+        {
+            builder.ConfigureServices(s => s.RegisterType<T>().AsSelf().Singleton());
+            builder.ConfigureServices(s => s.RegisterType<SetupDataAction<T>>().As<IPostBuildAction>().Singleton());
+            return builder;
+        }
+
+        internal class SetupDataAction<T> : IPostBuildAction
+            where T : class
+        {
+            private readonly IScriptHost host;
+
+            public SetupDataAction(IScriptHost host) => this.host = host;
+
+            public void Invoke(IServiceProvider provider) => host.Setup(_ => provider.GetRequiredService<T>());
         }
     }
 }

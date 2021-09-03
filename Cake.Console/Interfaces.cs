@@ -1,0 +1,11 @@
+using Cake.Core.IO;
+using Cake.Core.Packaging;
+using System;
+
+namespace Cake.Console
+{
+    public interface IWorkingDirectory { string WorkingDirectory { get; } }
+    public interface ICakeToolReference { PackageReference Reference { get; } }
+    public interface IPostBuildAction { void Invoke(IServiceProvider provider); }
+    public interface ICakeTasks { }
+}

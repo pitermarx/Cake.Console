@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Cake.Common.Diagnostics;
+using Cake.Common.IO;
 using Cake.Core;
 using Cake.Core.Composition;
-using Cake.Core.Packaging;
 using Cake.Core.Scripting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,19 +13,12 @@ namespace Cake.Console
     public class CakeHostBuilder
     {
         private readonly string[] args;
-        private readonly List<PackageReference> tools = new();
         private readonly CakeContainer cakeContainer = new();
 
         public CakeHostBuilder(string[] args)
             => this.args = args;
 
-        public CakeHostBuilder WithTool(PackageReference toInstall)
-        {
-            tools.Add(toInstall);
-            return this;
-        }
-
-        public CakeHostBuilder Configure(Action<ICakeContainerRegistrar> action)
+        public CakeHostBuilder ConfigureServices(Action<ICakeContainerRegistrar> action)
         {
             action(cakeContainer);
             return this;
@@ -38,14 +31,26 @@ namespace Cake.Console
                 .Build();
 
             var host = provider.GetService<IScriptHost>();
-            var toolInstaller = provider.GetService<ToolInstaller>();
-            var tasks = provider.GetServices<ICakeTasks>();
+            if (provider.GetService<IWorkingDirectory>() is IWorkingDirectory wd)
+            {
+                var dir = host.Context.Directory(wd.WorkingDirectory).Path.MakeAbsolute(host.Context.Environment);
+                host.Context.Environment.WorkingDirectory = dir;
+                host.Context.Debug($"Working directory changed to '{dir}'");
+            }
 
-            foreach (var t in tools) toolInstaller.Install(t);
+            var toolInstaller = provider.GetService<ToolInstaller>();
+            var tools = provider.GetServices<ICakeToolReference>();
+            foreach (var t in tools) toolInstaller.Install(t.Reference);
+
+            var tasks = provider.GetServices<ICakeTasks>();
             foreach (var s in tasks) RegisterTasks(host, s);
+
+            var actions = provider.GetServices<IPostBuildAction>();
+            foreach (var a in actions) a.Invoke(provider);
 
             return host;
         }
+
         private static void RegisterTasks(IScriptHost host, ICakeTasks service)
         {
             var tasks = service.GetType()
@@ -61,6 +66,7 @@ namespace Cake.Console
 
             foreach (var t in tasks)
             {
+                host.Context.Debug($"Registering task {t.Name}");
                 t.Invoke(service, new[] { host.Task(t.Name) });
             }
         }
