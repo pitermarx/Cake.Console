@@ -1,7 +1,5 @@
+using Cake.Console.HostBuilderBehaviours;
 using Cake.Core.Composition;
-using Cake.Core.Scripting;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Cake.Console
 {
@@ -28,18 +26,15 @@ namespace Cake.Console
         public static CakeHostBuilder ContextData<T>(this CakeHostBuilder builder) where T : class
         {
             builder.ConfigureServices(s => s.RegisterType<T>().AsSelf().Singleton());
-            builder.ConfigureServices(s => s.RegisterType<SetupDataAction<T>>().As<IPostBuildAction>().Singleton());
+            builder.ConfigureServices(s => s.RegisterType<SetupContextDataBehaviour<T>>().As<IHostBuilderBehaviour>().Singleton());
             return builder;
         }
 
-        internal class SetupDataAction<T> : IPostBuildAction
-            where T : class
+        public static CakeHostBuilder ContextData<T>(this CakeHostBuilder builder, T instance) where T : class
         {
-            private readonly IScriptHost host;
-
-            public SetupDataAction(IScriptHost host) => this.host = host;
-
-            public void Invoke(IServiceProvider provider) => host.Setup(_ => provider.GetRequiredService<T>());
+            builder.ConfigureServices(s => s.RegisterInstance(instance).AsSelf().Singleton());
+            builder.ConfigureServices(s => s.RegisterType<SetupContextDataBehaviour<T>>().As<IHostBuilderBehaviour>().Singleton());
+            return builder;
         }
     }
 }

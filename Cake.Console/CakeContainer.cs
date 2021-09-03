@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cake.Console.HostBuilderBehaviours;
 using Cake.Core;
 using Cake.Core.Composition;
 using Cake.Core.Configuration;
@@ -31,8 +32,10 @@ namespace Cake.Console
             return registration;
         }
 
-        public IServiceProvider Build()
+        public IServiceProvider Build(string[] args)
         {
+            RegisterServices(args);
+
             IServiceCollection collection = new ServiceCollection();
             foreach (var serv in services)
             {
@@ -41,7 +44,7 @@ namespace Cake.Console
             return collection.BuildServiceProvider();
         }
 
-        public CakeContainer RegisterServices(string[] args)
+        private void RegisterServices(string[] args)
         {
             new CoreModule().Register(this);
             new NuGetModule().Register(this);
@@ -71,9 +74,10 @@ namespace Cake.Console
             services.Add(Builder.Singleton(s => s.GetService<CakeConfigurationProvider>().CreateConfiguration(".", dic)));
 
             services.Add(Builder.Singleton<IScriptHost, CakeHost>());
-            services.Add(Builder.Singleton<ToolInstaller>());
 
-            return this;
+            services.Add(Builder.Singleton<IHostBuilderBehaviour, WorkingDirectoryBehaviour>());
+            services.Add(Builder.Singleton<IHostBuilderBehaviour, ToolInstallerBehaviour>());
+            services.Add(Builder.Singleton<IHostBuilderBehaviour, TaskRegisteringBehaviour>());
         }
 
         internal sealed class Builder : ICakeRegistrationBuilder
