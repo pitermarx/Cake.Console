@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Cake.Common;
 using Cake.Common.Diagnostics;
+using Cake.Console.HostBuilderBehaviours;
+using Cake.Console.Internals;
 using Cake.Core.Composition;
 using Cake.Core.Scripting;
 using Microsoft.Extensions.DependencyInjection;

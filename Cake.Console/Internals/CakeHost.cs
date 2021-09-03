@@ -5,7 +5,7 @@ using Cake.Core;
 using Cake.Core.Diagnostics;
 using Cake.Core.Scripting;
 
-namespace Cake.Console
+namespace Cake.Console.Internals
 {
     internal class CakeHost : ScriptHost
     {

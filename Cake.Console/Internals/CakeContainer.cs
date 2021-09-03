@@ -11,7 +11,7 @@ using Cake.Core.Scripting;
 using Cake.NuGet;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cake.Console
+namespace Cake.Console.Internals
 {
     internal sealed class CakeContainer : ICakeContainerRegistrar
     {

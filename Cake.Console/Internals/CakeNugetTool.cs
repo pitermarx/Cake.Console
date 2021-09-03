@@ -3,7 +3,7 @@ using System;
 
 namespace Cake.Console
 {
-    public class CakeNugetTool : ICakeToolReference
+    internal class CakeNugetTool : ICakeToolReference
     {
         public PackageReference Reference { get; }
 
