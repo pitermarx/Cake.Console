@@ -1,20 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="cake.cli" Version="1.2.0" />
     <PackageReference Include="cake.core" Version="1.2.0" />
     <PackageReference Include="cake.common" Version="1.2.0" />
+    <PackageReference Include="cake.Nuget" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="cake.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
