@@ -1,6 +1,4 @@
 using System;
-using System.Threading.Tasks;
-using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Console.HostBuilderBehaviours;
 using Cake.Console.Internals;
@@ -24,18 +22,6 @@ namespace Cake.Console
             return this;
         }
 
-        public Task Run(string defaultTarget = null)
-        {
-            var host = Build();
-            if (host.Context.Argument("Target", defaultTarget) is string t)
-            {
-                return host.RunTargetAsync(t);
-            }
-
-            host.Context.Error("No target specified");
-            return Task.CompletedTask;
-        }
-
         public IScriptHost Build()
         {
             var provider = cakeContainer.Build(args);
@@ -44,7 +30,7 @@ namespace Cake.Console
             foreach (var behaviour in provider.GetServices<IHostBuilderBehaviour>())
             {
                 host.Context.Debug($"Applying {behaviour.GetType().Name}");
-                behaviour.Run(provider);
+                behaviour.Run();
             }
 
             return host;

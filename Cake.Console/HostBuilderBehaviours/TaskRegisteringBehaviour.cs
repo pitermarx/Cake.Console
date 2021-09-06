@@ -1,22 +1,26 @@
-using System;
-using Microsoft.Extensions.DependencyInjection;
 using Cake.Common.Diagnostics;
 using Cake.Core;
 using Cake.Core.Scripting;
 using System.Reflection;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Cake.Console.HostBuilderBehaviours
 {
     internal class TaskRegisteringBehaviour : IHostBuilderBehaviour
     {
         private readonly IScriptHost host;
+        private readonly IEnumerable<ICakeTasks> tasks;
 
-        public TaskRegisteringBehaviour(IScriptHost host) => this.host = host;
-
-        public void Run(IServiceProvider provider)
+        public TaskRegisteringBehaviour(IScriptHost host, IEnumerable<ICakeTasks> tasks)
         {
-            foreach (var taskClass in provider.GetServices<ICakeTasks>())
+            this.host = host;
+            this.tasks = tasks;
+        }
+
+        public void Run()
+        {
+            foreach (var taskClass in tasks ?? Enumerable.Empty<ICakeTasks>())
             {
                 var tasks = taskClass.GetType()
                     .GetMethods(BindingFlags.Public | BindingFlags.Instance)

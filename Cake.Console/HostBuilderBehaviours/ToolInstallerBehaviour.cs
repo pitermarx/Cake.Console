@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Extensions.DependencyInjection;
 using Cake.Core;
 using Cake.Core.Diagnostics;
 using Cake.Core.Packaging;
@@ -12,17 +11,18 @@ namespace Cake.Console.HostBuilderBehaviours
     internal class ToolInstallerBehaviour : IHostBuilderBehaviour
     {
         private readonly ICakeContext ctx;
+        private readonly IReadOnlyList<ICakeToolReference> tools;
         private readonly IReadOnlyList<IPackageInstaller> installers;
 
-        public ToolInstallerBehaviour(ICakeContext ctx, IEnumerable<IPackageInstaller> installers)
+        public ToolInstallerBehaviour(ICakeContext ctx, IEnumerable<ICakeToolReference> tools, IEnumerable<IPackageInstaller> installers)
         {
+            this.tools = tools?.ToArray() ?? Array.Empty<ICakeToolReference>();
             this.installers = installers?.ToArray() ?? Array.Empty<IPackageInstaller>();
             this.ctx = ctx;
         }
 
-        public void Run(IServiceProvider provider)
+        public void Run()
         {
-            var tools = provider.GetServices<ICakeToolReference>();
             var root = ctx.Configuration.GetToolPath(".", ctx.Environment);
 
             foreach (var tool in tools.Select(t => t.Reference))

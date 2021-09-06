@@ -1,20 +1,25 @@
-using System;
-using Microsoft.Extensions.DependencyInjection;
 using Cake.Common.IO;
 using Cake.Common.Diagnostics;
 using Cake.Core;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Cake.Console.HostBuilderBehaviours
 {
     internal class WorkingDirectoryBehaviour : IHostBuilderBehaviour
     {
         private readonly ICakeContext ctx;
+        private readonly IWorkingDirectory workingDirectory;
 
-        public WorkingDirectoryBehaviour(ICakeContext ctx) => this.ctx = ctx;
-
-        public void Run(IServiceProvider provider)
+        public WorkingDirectoryBehaviour(ICakeContext ctx, IEnumerable<IWorkingDirectory> workingDirectory)
         {
-            if (provider.GetService<IWorkingDirectory>() is IWorkingDirectory wd)
+            this.ctx = ctx;
+            this.workingDirectory = workingDirectory.SingleOrDefault();
+        }
+
+        public void Run()
+        {
+            if (workingDirectory is IWorkingDirectory wd)
             {
                 var dir = ctx.Directory(wd.WorkingDirectory).Path.MakeAbsolute(ctx.Environment);
                 ctx.Environment.WorkingDirectory = dir;

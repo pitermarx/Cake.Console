@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using Cake.Common;
+using Cake.Common.Diagnostics;
 using Cake.Console.HostBuilderBehaviours;
 using Cake.Core.Composition;
 
@@ -35,6 +38,18 @@ namespace Cake.Console
             builder.ConfigureServices(s => s.RegisterInstance(instance).AsSelf().Singleton());
             builder.ConfigureServices(s => s.RegisterType<SetupContextDataBehaviour<T>>().As<IHostBuilderBehaviour>().Singleton());
             return builder;
+        }
+
+        public static Task Run(this CakeHostBuilder builder, string defaultTarget = null)
+        {
+            var host = builder.Build();
+            if (host.Context.Argument("Target", defaultTarget) is string t)
+            {
+                return host.RunTargetAsync(t);
+            }
+
+            host.Context.Error("No target specified");
+            return Task.CompletedTask;
         }
     }
 }

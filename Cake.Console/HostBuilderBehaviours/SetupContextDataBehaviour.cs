@@ -1,4 +1,3 @@
-using Cake.Core.Scripting;
 using System;
 
 namespace Cake.Console.HostBuilderBehaviours
@@ -15,6 +14,6 @@ namespace Cake.Console.HostBuilderBehaviours
             this.data = data;
         }
 
-        public void Run(IServiceProvider provider) => host.Setup(_ => data);
+        public void Run() => host.Setup(_ => data);
     }
 }
