@@ -1,4 +1,5 @@
-using System;
+using Cake.Common.Diagnostics;
+using Cake.Core.Scripting;
 
 namespace Cake.Console.HostBuilderBehaviours
 {
@@ -14,6 +15,10 @@ namespace Cake.Console.HostBuilderBehaviours
             this.data = data;
         }
 
-        public void Run() => host.Setup(_ => data);
+        public void Run() => host.Setup(_ =>
+        {
+            host.Context.Information($"Setting up context data <{typeof(T).Name}>");
+            return data;
+        });
     }
 }

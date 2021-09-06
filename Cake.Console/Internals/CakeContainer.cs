@@ -56,7 +56,7 @@ namespace Cake.Console.Internals
                 var v = s.GetService<ICakeConfiguration>().GetValue("verbosity");
                 var verbosity = Enum.TryParse<Verbosity>(v, true, out var verb)
                     ? verb
-                    : Verbosity.Minimal;
+                    : Verbosity.Normal;
 
                 var console = s.GetService<IConsole>();
                 return new CakeBuildLog(console, verbosity);
