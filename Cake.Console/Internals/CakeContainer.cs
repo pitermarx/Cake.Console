@@ -15,7 +15,35 @@ namespace Cake.Console.Internals
 {
     internal sealed class CakeContainer : ICakeContainerRegistrar
     {
-        private readonly List<Builder> services = new();
+        private readonly List<Builder> services;
+
+        public CakeContainer(CakeConsoleArguments args)
+        {
+            services = new();
+            new CoreModule().Register(this);
+            new NuGetModule().Register(this);
+
+            services.Add(Builder.Singleton<CakeConfigurationProvider>());
+            services.Add(Builder.Singleton<ICakeArguments>(args));
+            services.Add(Builder.Singleton(s => s
+                .GetService<CakeConfigurationProvider>()
+                .CreateConfiguration(".", args
+                    .GetArguments()
+                    .ToDictionary(a => a.Key, a => a.Value.First()))));
+
+            // Logging
+            services.Add(Builder.Singleton<ICakeReportPrinter, CakeReportPrinter>());
+            services.Add(Builder.Singleton<IConsole, CakeConsole>());
+            services.Add(Builder.Singleton<ICakeLog, CakeConsoleLog>());
+
+            // behaviours
+            services.Add(Builder.Singleton<IHostBuilderBehaviour, WorkingDirectoryBehaviour>());
+            services.Add(Builder.Singleton<IHostBuilderBehaviour, ToolInstallerBehaviour>());
+            services.Add(Builder.Singleton<IHostBuilderBehaviour, TaskRegisteringBehaviour>());
+
+            // the host
+            services.Add(Builder.Singleton<IScriptHost, CakeHost>());
+        }
 
         public ICakeRegistrationBuilder RegisterInstance<T>(T instance)
             where T : class
@@ -32,52 +60,14 @@ namespace Cake.Console.Internals
             return registration;
         }
 
-        public IServiceProvider Build(string[] args)
+        public IServiceProvider Build()
         {
-            RegisterServices(args);
-
             IServiceCollection collection = new ServiceCollection();
             foreach (var serv in services)
             {
                 collection.Add(serv.BuildServiceDescriptor());
             }
             return collection.BuildServiceProvider();
-        }
-
-        private void RegisterServices(string[] args)
-        {
-            new CoreModule().Register(this);
-            new NuGetModule().Register(this);
-
-            services.Add(Builder.Singleton<ICakeReportPrinter, CakeReportPrinter>());
-            services.Add(Builder.Singleton<IConsole, CakeConsole>());
-            services.Add(Builder.Singleton<ICakeLog>(s =>
-            {
-                var v = s.GetService<ICakeConfiguration>().GetValue("verbosity");
-                var verbosity = Enum.TryParse<Verbosity>(v, true, out var verb)
-                    ? verb
-                    : Verbosity.Normal;
-
-                var console = s.GetService<IConsole>();
-                return new CakeBuildLog(console, verbosity);
-            }));
-
-            // naive arg parsing
-            var dic = args
-                .Select(a => a.Replace("-", string.Empty).Split("="))
-                .ToDictionary(
-                    pair => pair[0],
-                    pair => pair.Length > 1 ? pair[1] : "true");
-
-            services.Add(Builder.Singleton<CakeConfigurationProvider>());
-            services.Add(Builder.Singleton<ICakeArguments>(new CakeArguments(dic.ToLookup(v => v.Key, v => v.Value))));
-            services.Add(Builder.Singleton(s => s.GetService<CakeConfigurationProvider>().CreateConfiguration(".", dic)));
-
-            services.Add(Builder.Singleton<IScriptHost, CakeHost>());
-
-            services.Add(Builder.Singleton<IHostBuilderBehaviour, WorkingDirectoryBehaviour>());
-            services.Add(Builder.Singleton<IHostBuilderBehaviour, ToolInstallerBehaviour>());
-            services.Add(Builder.Singleton<IHostBuilderBehaviour, TaskRegisteringBehaviour>());
         }
 
         internal sealed class Builder : ICakeRegistrationBuilder
@@ -121,7 +111,6 @@ namespace Cake.Console.Internals
             public static Builder Singleton<T>(T value) => new() { impl = typeof(T), type = typeof(T), instance = value };
 
             public static Builder Singleton<T>(Func<IServiceProvider, T> value) => new() { impl = typeof(T), type = typeof(T), factory = s => value(s) };
-
 
             public ServiceDescriptor BuildServiceDescriptor()
             {
