@@ -34,16 +34,31 @@ namespace Cake.Console
                 registration.As<T>().Singleton();
             });
 
-        public static Task Run(this CakeHostBuilder builder, string defaultTarget = null)
+        public static Task RunCakeCli(this CakeHostBuilder builder, string target = null)
+            => builder.Build().RunCakeCli(target);
+
+        public static Task RunCakeCli(this IScriptHost host, string target = null)
         {
-            var host = builder.Build();
-            if (host.Context.Argument("Target", defaultTarget) is string t)
+            if (host.Context.HasArgument("version"))
             {
-                return host.RunTargetAsync(t);
+                new VersionFeature(new VersionResolver()).Run(new CakeConsole(host.Context.Environment));
+                return Task.CompletedTask;
             }
 
-            host.Context.Error("No target specified");
-            return Task.CompletedTask;
+            if (host.Context.HasArgument("info"))
+            {
+                new InfoFeature(new VersionResolver()).Run(new CakeConsole(host.Context.Environment));
+                return Task.CompletedTask;
+            }
+
+            target ??= host.Context.Argument<string>("target");
+            if (target is null)
+            {
+                host.Context.Error("No target specified");
+                return Task.CompletedTask;
+            }
+
+            return host.RunTargetAsync(target);
         }
     }
 }

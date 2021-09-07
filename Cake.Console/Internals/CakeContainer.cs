@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cake.Cli;
 using Cake.Console.HostBuilderBehaviours;
 using Cake.Core;
 using Cake.Core.Composition;
@@ -19,7 +20,7 @@ namespace Cake.Console.Internals
 
         public CakeContainer(CakeConsoleArguments args)
         {
-            services = new();
+            services = new List<Builder>();
             new CoreModule().Register(this);
             new NuGetModule().Register(this);
 
@@ -42,7 +43,12 @@ namespace Cake.Console.Internals
             services.Add(Builder.Singleton<IHostBuilderBehaviour, TaskRegisteringBehaviour>());
 
             // the host
-            services.Add(Builder.Singleton<IScriptHost, CakeHost>());
+            var host = args.HasArgument("dryrun") ? typeof(DryRunScriptHost) :
+                args.HasArgument("description") ? typeof(DescriptionScriptHost) :
+                args.HasArgument("tree") ? typeof(TreeScriptHost) :
+                typeof(CakeHost);
+
+            RegisterType(host).As<IScriptHost>().Singleton();
         }
 
         public ICakeRegistrationBuilder RegisterInstance<T>(T instance)

@@ -8,6 +8,7 @@
     <PackageReference Include="cake.core" Version="1.2.0" />
     <PackageReference Include="cake.common" Version="1.2.0" />
     <PackageReference Include="cake.Nuget" Version="1.2.0" />
+    <PackageReference Include="cake.cli" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
   </ItemGroup>
 </Project>
