@@ -21,6 +21,7 @@ namespace Cake.Console.Internals
         public CakeContainer(CakeConsoleArguments args)
         {
             services = new List<Builder>();
+
             new CoreModule().Register(this);
             new NuGetModule().Register(this);
 
