@@ -42,6 +42,11 @@ namespace Cake.Console.Internals
             services.Add(Builder.Singleton<IHostBuilderBehaviour, ToolInstallerBehaviour>());
             services.Add(Builder.Singleton<IHostBuilderBehaviour, TaskRegisteringBehaviour>());
 
+            // features
+            services.Add(Builder.Singleton<IVersionResolver, VersionResolver>());
+            services.Add(Builder.Singleton<VersionFeature>());
+            services.Add(Builder.Singleton<InfoFeature>());
+
             // the host
             var host = args.HasArgument("dryrun") ? typeof(DryRunScriptHost) :
                 args.HasArgument("description") ? typeof(DescriptionScriptHost) :

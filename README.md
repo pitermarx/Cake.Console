@@ -12,5 +12,5 @@ await new CakeHostBuilder(args)
     .ContextData<Data>()
     .RegisterTasks<Tasks>()
     .InstallNugetTool("xunit.runner.console", "2.4.1")
-    .RunCakeCli();
+    .Run();
 ```
