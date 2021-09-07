@@ -25,14 +25,20 @@ namespace Cake.Console
         public IScriptHost Build()
         {
             var provider = cakeContainer.Build(args);
-
+            
             var host = provider.GetService<IScriptHost>();
             foreach (var behaviour in provider.GetServices<IHostBuilderBehaviour>())
             {
-                host.Context.Debug($"Applying {behaviour.GetType().Name}");
+                var type = behaviour.GetType();
+                var name = type.Name;
+                if (type.IsGenericType)
+                {
+                    name = name.Replace("`1", string.Empty);
+                    name += $"<{string.Join(", ", type.GenericTypeArguments.Select(t => t.Name))}>";
+                }
+                host.Context.Debug($"Applying {name}");
                 behaviour.Run();
             }
-
             return host;
         }
     }
