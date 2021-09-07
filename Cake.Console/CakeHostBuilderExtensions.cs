@@ -1,12 +1,7 @@
 using System.Threading.Tasks;
-using Cake.Cli;
 using Cake.Common;
-using Cake.Common.Diagnostics;
 using Cake.Console.HostBuilderBehaviours;
-using Cake.Core;
 using Cake.Core.Composition;
-using Cake.Core.Diagnostics;
-using Cake.Core.Scripting;
 
 namespace Cake.Console
 {
@@ -37,13 +32,8 @@ namespace Cake.Console
         public static Task Run(this CakeHostBuilder builder, string defaultTarget = null)
         {
             var host = builder.Build();
-            if (host.Context.Argument("Target", defaultTarget) is string t)
-            {
-                return host.RunTargetAsync(t);
-            }
-
-            host.Context.Error("No target specified");
-            return Task.CompletedTask;
+            var target = defaultTarget ?? host.Context.Argument<string>("target");
+            return host.RunTargetAsync(target);
         }
     }
 }
