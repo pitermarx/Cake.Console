@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cake.Core" Version="1.2.0" />
+    <PackageReference Include="Cake.Common" Version="1.2.0" />
+    <PackageReference Include="Cake.Nuget" Version="1.2.0" />
+    <PackageReference Include="Cake.Cli" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+  </ItemGroup>
+</Project>
