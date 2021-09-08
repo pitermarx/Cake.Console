@@ -20,6 +20,12 @@ namespace Cake.Console.Internals
                     pair => (ICollection<string>)new[]{pair.Length > 1 ? pair[1] : "true"});
         }
 
+        public CakeConsoleArguments(ILookup<string, string> parsed, Core.Diagnostics.Verbosity verbosity)
+        {
+            arguments = parsed.ToDictionary(p => p.Key, p => (ICollection<string>)p.ToArray());
+            arguments["verbosity"] = new []{ verbosity.ToString() };
+        }
+
         public ICollection<string> GetArguments(string name)
             => HasArgument(name) ? arguments[name.ToLowerInvariant()] : Array.Empty<string>();
 

@@ -28,12 +28,5 @@ namespace Cake.Console
                     : s.RegisterInstance(instance);
                 registration.As<T>().Singleton();
             });
-
-        public static Task Run(this CakeHostBuilder builder, string defaultTarget = null)
-        {
-            var host = builder.Build();
-            var target = defaultTarget ?? host.Context.Argument<string>("target");
-            return host.RunTargetAsync(target);
-        }
     }
 }

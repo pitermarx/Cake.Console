@@ -7,10 +7,10 @@ https://blog.pitermarx.com/2021/09/presenting-cake-console/
 ## Usage
 
 ```cs
-await new CakeHostBuilder(args)
+await new CakeHostBuilder()
     .WorkingDirectory<MyWorkingDirectory>()
     .ContextData<Data>()
     .RegisterTasks<Tasks>()
     .InstallNugetTool("xunit.runner.console", "2.4.1")
-    .Run();
+    .RunCakeCli(args);
 ```
