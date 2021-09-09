@@ -1,3 +1,4 @@
+using Cake.Core.Composition;
 using Cake.Core.Packaging;
 using System;
 

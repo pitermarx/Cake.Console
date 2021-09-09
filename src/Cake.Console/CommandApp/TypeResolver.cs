@@ -1,29 +1,15 @@
 using System;
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console.Cli;
 
 namespace Cake.Console.CommandApp
 {
-    internal sealed class TypeResolver : ITypeResolver, IDisposable
+    internal sealed class TypeResolver : Spectre.Console.Cli.ITypeResolver
     {
-        private readonly IServiceProvider _provider;
+        private readonly IServiceProvider provider;
 
         public TypeResolver(IServiceProvider provider)
-        {
-            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
-        }
+            => this.provider = provider;
 
         public object Resolve(Type type)
-        {
-            return _provider.GetRequiredService(type);
-        }
-
-        public void Dispose()
-        {
-            if (_provider is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-        }
+            => provider.GetService(type) ?? new NullReferenceException($"Type {type.Name} not found");
     }
 }

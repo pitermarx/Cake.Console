@@ -9,7 +9,7 @@ namespace Cake.Console.Internals
     {
         private readonly IDictionary<string, ICollection<string>> arguments;
 
-        public CakeConsoleArguments(string[] args)
+        public CakeConsoleArguments(IEnumerable<string> args)
         {
             // very naive argument parsing.
             // send help

@@ -1,11 +1,10 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using Cake.Cli;
 using Cake.Console.Internals;
 using Cake.Core;
+using Cake.Core.Composition;
 using Cake.Core.Diagnostics;
-using Cake.Core.IO;
 using Cake.Core.Scripting;
 using Spectre.Console.Cli;
 
@@ -82,20 +81,25 @@ namespace Cake.Console.CommandApp
                 return 0;
             }
 
-            ICakeArguments args = new CakeConsoleArguments(context.Remaining.Parsed, settings.Verbosity);
-            var host = settings switch
+            ScriptHost host = settings switch
             {
-                {DryRun: true} => builder.Build<DryRunScriptHost>(args),
-                {Description: true} => builder.Build<DescriptionScriptHost>(args),
-                {Tree: true} => builder.Build<TreeScriptHost>(args),
-                _ => builder.Build<CakeHost>(args)
+                {DryRun: true} => ConfigureAndBuild<DryRunScriptHost>(),
+                {Description: true} => ConfigureAndBuild<DescriptionScriptHost>(),
+                {Tree: true} => ConfigureAndBuild<TreeScriptHost>(),
+                _ => ConfigureAndBuild<CakeHost>()
             };
 
-            if (settings.Exclusive && host is ScriptHost h) h.Settings.UseExclusiveTarget();
+            if (settings.Exclusive) host.Settings.UseExclusiveTarget();
 
             host.RunTarget(settings.Target);
 
             return 0;
+
+            T ConfigureAndBuild<T>() where T : class, IScriptHost
+            {
+                var args = new CakeConsoleArguments(context.Remaining.Parsed, settings.Verbosity);
+                return builder.ConfigureServices(s => s.RegisterType<T>().AsSelf().Singleton()).BuildScriptHost<T>(args);
+            }
         }
     }
 }
