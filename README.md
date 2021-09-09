@@ -30,10 +30,6 @@ There are 2 ways of using Cake.Console:
 1. Building an IScriptHost. This is the implicit object in the .cake scripts, so we can use it to register tasks, perform setup, etc.
 
 ```cs
-using Cake.Console;
-using Cake.Core;
-using Cake.Common.Diagnostics;
-
 var host = new CakeHostBuilder().BuildHost(args);
 
 host.Setup(() => { do something });
