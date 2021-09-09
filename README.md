@@ -77,8 +77,7 @@ Given a package name and a version, installs a nuget package as a [Cake tool](ht
 # Summary
 Putting it all together
 
-```cs
-using Cake.Common.Diagnostics;
+```csusing Cake.Common.Diagnostics;
 using Cake.Console;
 using Cake.Core;
 
@@ -86,11 +85,25 @@ new CakeHostBuilder()
     .WorkingDirectory<WorkingDir>()
     .ContextData<ContextData>()
     .RegisterTasks<CakeTasks>()
+    .InstallNugetTool("xunit.runner.console", "2.4.1")
     .RunCakeCli(args);
 
 record WorkingDir(string WorkingDirectory = ".") : IWorkingDirectory;
-record ContextData(string SomeVeryImportantData = "Cake is awesome");
-public class CakeTasks : ICakeTasks
+
+class ContextData
+{
+    public string SomeVeryImportantData { get; set; } = "Cake is awesome!";
+    public ContextData(ICakeArguments args)
+    {
+        if (args.HasArgument("tone-down"))
+        {
+            SomeVeryImportantData = "Cake is pretty good...";
+        }
+    }
+}
+
+
+class CakeTasks : ICakeTasks
 {
     private readonly ICakeContext ctx;
 
