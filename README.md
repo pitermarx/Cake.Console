@@ -77,7 +77,8 @@ Given a package name and a version, installs a nuget package as a [Cake tool](ht
 # Summary
 Putting it all together
 
-```csusing Cake.Common.Diagnostics;
+```cs
+using Cake.Common.Diagnostics;
 using Cake.Console;
 using Cake.Core;
 
