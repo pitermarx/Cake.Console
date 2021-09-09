@@ -25,3 +25,7 @@ jobs:
       run: scripts/test.ps1
     - name: Pack
       run: dotnet pack src/Cake.Console/Cake.Console.csproj -c=Release
+    - name: Publish
+      run: dotnet nuget push src/Cake.Console/bin/Release/net5.0/*.nupkg -k ${NUGET_API_KEY} --skip-duplicate
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
