@@ -20,7 +20,7 @@ jobs:
     - name: Pack
       run: dotnet pack src/Cake.Console/Cake.Console.csproj -c=Release
     - name: Publish
-      run: dotnet nuget push src/Cake.Console/bin/Release/Cake.Console.1.2.0.nupkg --source ${PUSH_SOURCE} --api-key ${NUGET_API_KEY} --skip-duplicate
+      run: dotnet nuget push src/Cake.Console/bin/Release/Cake.Console.1.2.0.nupkg --source $PUSH_SOURCE --api-key $NUGET_API_KEY --skip-duplicate
       env:
         PUSH_SOURCE: https://api.nuget.org/v3/index.json
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
