@@ -17,15 +17,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore src/Cake.Console.sln
-    - name: Build
-      run: dotnet build src/Cake.Console.sln --no-restore
-    - name: Test
-      run: scripts/test.ps1
     - name: Pack
       run: dotnet pack src/Cake.Console/Cake.Console.csproj -c=Release
     - name: Publish
-      run: dotnet nuget push src/Cake.Console/bin/Release/net5.0/*.nupkg -k ${NUGET_API_KEY} --skip-duplicate
+      run: dotnet nuget push src/Cake.Console/bin/Release/net5.0/*.nupkg -k ${NUGET_API_KEY} -s ${PUSH_SOURCE} --skip-duplicate
       env:
+        PUSH_SOURCE: https://api.nuget.org/v3/index.json
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
