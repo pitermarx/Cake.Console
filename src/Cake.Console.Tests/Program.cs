@@ -32,6 +32,11 @@ string RunCli()
 
 class Tasks : ICakeTasks
 {
+    public void PrintArgs(CakeTaskBuilder b) => b.Does(c =>
+    {
+        foreach (var a in c.Arguments.GetArguments()) c.Information($"--{a.Key}={string.Join(",", a.Value)}");
+    });
+
     public void Task1(CakeTaskBuilder b) => b.Does(c => c.Information("Task1 executed"));
     public void Task2(CakeTaskBuilder b) => b.Does(c => c.Information("Task2 executed"));
     public void TaskA(CakeTaskBuilder b) => b.Does(c => c.Information("TaskA executed"));

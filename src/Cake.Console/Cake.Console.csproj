@@ -3,17 +3,18 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <!-- TODO: a smarter way to keep in sync with cake -->
-    <Version>1.2.0</Version>
+    <CakeVersion>1.2.0</Version>
+    <Version>1.2.0.1</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <PackageVersion>$(Version)</PackageVersion>
     <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cake.Core" Version="$(Version)" />
-    <PackageReference Include="Cake.Common" Version="$(Version)" />
-    <PackageReference Include="Cake.Nuget" Version="$(Version)" />
-    <PackageReference Include="Cake.Cli" Version="$(Version)" />
+    <PackageReference Include="Cake.Core" Version="$(CakeVersion)" />
+    <PackageReference Include="Cake.Common" Version="$(CakeVersion)" />
+    <PackageReference Include="Cake.Nuget" Version="$(CakeVersion)" />
+    <PackageReference Include="Cake.Cli" Version="$(CakeVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
   </ItemGroup>
 </Project>

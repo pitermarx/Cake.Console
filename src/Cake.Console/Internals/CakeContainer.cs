@@ -9,7 +9,6 @@ using Cake.Core.Composition;
 using Cake.Core.Configuration;
 using Cake.Core.Diagnostics;
 using Cake.Core.Modules;
-using Cake.Core.Scripting;
 using Cake.NuGet;
 using Microsoft.Extensions.DependencyInjection;
 using IBuilder = Cake.Core.Composition.ICakeRegistrationBuilder;
@@ -46,7 +45,7 @@ namespace Cake.Console.Internals
             this.RegisterType<TaskRegisteringBehaviour>().As<IHostBuilderBehaviour>().Singleton();
 
             // features
-            this.RegisterType<CakeConsoleVersionResolver>().As<IVersionResolver>().Singleton();
+            this.RegisterType<VersionResolver>().As<IVersionResolver>().Singleton();
             this.RegisterType<VersionFeature>().As<ICakeVersionFeature>().Singleton();
             this.RegisterType<InfoFeature>().As<ICakeInfoFeature>().Singleton();
         }

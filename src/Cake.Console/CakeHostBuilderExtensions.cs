@@ -1,6 +1,5 @@
 using Cake.Console.HostBuilderBehaviours;
 using Cake.Core.Composition;
-using Cake.Core.Scripting;
 
 namespace Cake.Console
 {

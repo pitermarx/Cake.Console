@@ -17,10 +17,17 @@ namespace Cake.Console
     public class CakeHostBuilder
     {
         private readonly CakeContainer cakeContainer = new();
+        private readonly List<Action<IScriptHost>> hostActions = new();
 
         public CakeHostBuilder ConfigureServices(Action<ICakeContainerRegistrar> action)
         {
             action(cakeContainer);
+            return this;
+        }
+
+        public CakeHostBuilder ConfigureHost(Action<IScriptHost> action)
+        {
+            hostActions.Add(action);
             return this;
         }
 
@@ -48,6 +55,8 @@ namespace Cake.Console
                 host.Context.Debug($"Applying {name}");
                 behaviour.Run();
             }
+
+            foreach (var a in hostActions) a(host);
 
             return host;
         }

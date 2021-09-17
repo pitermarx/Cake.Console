@@ -14,6 +14,7 @@ namespace Cake.Console.Internals
             // very naive argument parsing.
             // send help
             arguments = args
+                .Select(a => Trim(a))
                 .Select(a => a.Replace("-", string.Empty).Split("="))
                 .ToDictionary(
                     pair => pair[0].ToLowerInvariant(),
@@ -34,5 +35,13 @@ namespace Cake.Console.Internals
 
         public bool HasArgument(string name)
             => arguments.ContainsKey(name.ToLowerInvariant());
+
+        private static string Trim(string arg)
+        {
+            arg = arg.Trim();
+            var idx = 0;
+            while (arg.StartsWith("-")) idx++;
+            return arg[idx..];
+        }
     }
 }
