@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <!-- TODO: a smarter way to keep in sync with cake -->
     <CakeVersion>1.2.0</CakeVersion>
-    <Version>1.2.0.1</Version>
+    <Version>1.2.0.2</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <PackageVersion>$(Version)</PackageVersion>
     <FileVersion>$(Version)</FileVersion>

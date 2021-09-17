@@ -40,7 +40,7 @@ namespace Cake.Console.Internals
         {
             arg = arg.Trim();
             var idx = 0;
-            while (arg.StartsWith("-")) idx++;
+            while (arg[idx] == '-') idx++;
             return arg[idx..];
         }
     }
