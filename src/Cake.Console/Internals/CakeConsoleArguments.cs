@@ -14,8 +14,7 @@ namespace Cake.Console.Internals
             // very naive argument parsing.
             // send help
             arguments = args
-                .Select(a => Trim(a))
-                .Select(a => a.Replace("-", string.Empty).Split("="))
+                .Select(a => Trim(a).Split("="))
                 .ToDictionary(
                     pair => pair[0].ToLowerInvariant(),
                     pair => (ICollection<string>)new[]{pair.Length > 1 ? pair[1] : "true"});
