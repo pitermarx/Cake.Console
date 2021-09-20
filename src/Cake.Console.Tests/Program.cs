@@ -41,4 +41,6 @@ class Tasks : ICakeTasks
     public void Task2(CakeTaskBuilder b) => b.Does(c => c.Information("Task2 executed"));
     public void TaskA(CakeTaskBuilder b) => b.Does(c => c.Information("TaskA executed"));
     public void TaskB(CakeTaskBuilder b) => b.IsDependentOn("TaskA").Does(c => c.Information("TaskB executed"));
+    public void TaskC(CakeTaskBuilder b) => b.IsDependentOn("TaskB").Description("hello");
+    public void TaskD(CakeTaskBuilder b) => b.IsDependentOn("TaskB").Description("Some random text (&($/# /hda");
 }

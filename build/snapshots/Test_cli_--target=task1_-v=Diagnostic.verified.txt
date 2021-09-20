@@ -7,6 +7,8 @@ Registering task Task1
 Registering task Task2
 Registering task TaskA
 Registering task TaskB
+Registering task TaskC
+Registering task TaskD
 
 ========================================
 Task1

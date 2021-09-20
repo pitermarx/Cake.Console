@@ -6,10 +6,10 @@ using Cake.Common.Tools.DotNetCore.Build;
 using Cake.Common.Tools.DotNetCore.Pack;
 using Cake.Common.Tools.DotNetCore.NuGet.Push;
 using Cake.Core.IO;
-using System.Reflection;
-using VerifyTests;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Cake.Common.IO;
+using Cake.Common;
+using System;
 
 var proj = "src/Cake.Console/Cake.Console.csproj";
 var testProj = "src/Cake.Console.Tests/Cake.Console.Tests.csproj";
@@ -18,16 +18,18 @@ var config = "Release";
 
 var host = new CakeHostBuilder().BuildHost(args);
 
+host.Task("Clean")
+    .WithCriteria(c => c.HasArgument("rebuild"))
+    .Does(c => Delete("src/**/obj", "src/**/bin"));
+
 host.Task("Build")
+    .IsDependentOn("Clean")
     .Does(c =>
     {
         var sett = new DotNetCoreBuildSettings { Configuration = config, NoLogo = true };
         c.DotNetCoreBuild(proj, sett);
         c.DotNetCoreBuild(testProj, sett);
     });
-
-var testTask = host.Task("Test")
-    .IsDependentOn("Build");
 
 var tests = new []{
     "unknown",
@@ -49,12 +51,14 @@ var tests = new []{
     "cli -h",
     "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello"
 };
-foreach (var t in tests)
-{
-    var name = "Test_" + t.Replace(" ", "_");
-    host.Task(name).Verify(c => Run(t));
-    testTask.IsDependentOn(name);
-}
+
+host.Task("Test")
+    .IsDependentOn("Build")
+    .DoesForEach(tests, (t, c) => c.Verify($"Test_{t.Replace(" ", "_")}", s =>
+    {
+        s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
+        return Run(t);
+    }));
 
 host.Task("Pack")
     .IsDependentOn("Test")
@@ -73,19 +77,31 @@ host.Task("Push")
 host.Task("Default")
     .IsDependentOn("Push");
 
-host.RunTarget("Default");
+host.RunTarget(host.Context.Argument("target", "default"));
 
 string Run(string cmd)
 {
     var settings = new ProcessSettings()
         .SetRedirectStandardOutput(true)
         .SetRedirectStandardError(true)
-        .WithArguments(a => a.Append($"run -p {testProj} --no-build -- {cmd}"));
+        .WithArguments(a => a.Append($"run -p {testProj} -c={config} --no-build -- {cmd}"));
 
     using (var process = host.Context.ProcessRunner.Start("dotnet", settings))
     {
         var t = string.Join("\n", process.GetStandardOutput());
         var err = string.Join("\n", process.GetStandardError());
         return t + err;
+    }
+}
+
+void Delete(params string[] globs)
+{
+    foreach (var glob in globs)
+    {
+        var dirs = host.Context.GetDirectories(glob);
+        host.Context.DeleteDirectories(dirs, new DeleteDirectorySettings
+        {
+            Recursive = true
+        });
     }
 }

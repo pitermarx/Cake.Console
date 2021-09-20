@@ -5,7 +5,12 @@ Task1
 
 Task2
 
-TaskB
-└─TaskA
+TaskC
+└─TaskB
+   └─TaskA
+
+TaskD
+└─TaskB
+   └─TaskA
 
 OK
