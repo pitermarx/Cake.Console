@@ -67,12 +67,14 @@ host.Task("Pack")
 host.Task("Push")
     .WithCriteria(c => c.GitHubActions().IsRunningOnGitHubActions)
     .IsDependentOn("Pack")
-    .Does(c => c.DotNetCoreNuGetPush($"Cake.Console.{version}.nupkg", new DotNetCoreNuGetPushSettings
-    {
-        ApiKey = c.Environment.GetEnvironmentVariable("NUGET_API_KEY"),
-        Source = c.Environment.GetEnvironmentVariable("PUSH_SOURCE"),
-        SkipDuplicate = true
-    }));
+    .Does(c => c.DotNetCoreNuGetPush(
+        c.GetFiles($"**/Cake.Console.{version}.nupkg").First(),
+        new DotNetCoreNuGetPushSettings
+        {
+            ApiKey = c.Environment.GetEnvironmentVariable("NUGET_API_KEY"),
+            Source = c.Environment.GetEnvironmentVariable("PUSH_SOURCE"),
+            SkipDuplicate = true
+        }));
 
 host.Task("Default")
     .IsDependentOn("Push");
