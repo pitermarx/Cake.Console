@@ -12,13 +12,19 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 var proj = "src/Cake.Console/Cake.Console.csproj";
+var testProj = "src/Cake.Console.Tests/Cake.Console.Tests.csproj";
 var version = "1.2.0.4";
 var config = "Release";
 
 var host = new CakeHostBuilder().BuildHost(args);
 
 host.Task("Build")
-    .Does(c => c.DotNetCoreBuild(proj, new DotNetCoreBuildSettings { Configuration = config, NoLogo = true }));
+    .Does(c =>
+    {
+        var sett = new DotNetCoreBuildSettings { Configuration = config, NoLogo = true };
+        c.DotNetCoreBuild(proj, sett);
+        c.DotNetCoreBuild(testProj, sett);
+    });
 
 var testTask = host.Task("Test")
     .IsDependentOn("Build");
@@ -74,7 +80,7 @@ string Run(string cmd)
     var settings = new ProcessSettings()
         .SetRedirectStandardOutput(true)
         .SetRedirectStandardError(true)
-        .WithArguments(a => a.Append($"run -p src/Cake.Console.Tests/Cake.Console.Tests.csproj -- {cmd}"));
+        .WithArguments(a => a.Append($"run -p {testProj} --no-build -- {cmd}"));
 
     using (var process = host.Context.ProcessRunner.Start("dotnet", settings))
     {
