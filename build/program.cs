@@ -68,7 +68,7 @@ host.Task("Push")
     .WithCriteria(c => c.GitHubActions().IsRunningOnGitHubActions)
     .IsDependentOn("Pack")
     .Does(c => c.DotNetCoreNuGetPush(
-        c.GetFiles($"**/Cake.Console.{version}.nupkg").First(),
+        c.GetFiles($"**/Cake.Console.{version}.nupkg").First().FullPath,
         new DotNetCoreNuGetPushSettings
         {
             ApiKey = c.Environment.GetEnvironmentVariable("NUGET_API_KEY"),
