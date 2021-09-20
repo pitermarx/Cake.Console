@@ -1,0 +1,21 @@
+﻿NuGet Config not specified. Will use NuGet default mechanism for resolving it.
+Applying WorkingDirectoryBehaviour
+Applying ToolInstallerBehaviour
+Applying TaskRegisteringBehaviour
+Registering task PrintArgs
+Registering task Task1
+Registering task Task2
+Registering task TaskA
+Registering task TaskB
+
+========================================
+Task1
+========================================
+Executing task: Task1
+Task1 executed
+Finished executing task: Task1
+
+Task                          Duration            
+--------------------------------------------------
+--------------------------------------------------
+OK

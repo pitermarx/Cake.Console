@@ -1,0 +1,8 @@
+﻿Performing dry run...
+Target is: TaskB
+
+1. TaskB
+
+This was a dry run.
+No tasks were actually executed.
+OK

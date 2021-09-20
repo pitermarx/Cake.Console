@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cake.Console" Version="1.2.0.3" />
+    <PackageReference Include="verify" Version="11.27.0" />
+  </ItemGroup>
+</Project>

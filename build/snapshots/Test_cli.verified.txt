@@ -1,0 +1,3 @@
+﻿Cake.Core.CakeException: The target 'Default' was not found.
+   at Cake.Core.CakeEngine.RunTargetAsync(ICakeContext context, IExecutionStrategy strategy, ExecutionSettings settings)
+   at Cake.Console.Internals.CakeHost.RunTargetAsync(String target) in {CurrentDirectory}\src\Cake.Console\Internals\CakeHost.cs:line 37
