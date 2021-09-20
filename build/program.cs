@@ -71,18 +71,15 @@ host.RunTarget("Default");
 
 string Run(string cmd)
 {
-    using (var process = host.Context.ProcessRunner
-        .Start("dotnet", new ProcessSettings()
-            .SetRedirectStandardOutput(true)
-            .SetRedirectStandardError(true)
-            .WithArguments(a => a
-                .Append("run -p src/Cake.Console.Tests/Cake.Console.Tests.csproj")
-                .Append($"-- {cmd}"))))
+    var settings = new ProcessSettings()
+        .SetRedirectStandardOutput(true)
+        .SetRedirectStandardError(true)
+        .WithArguments(a => a.Append($"run -p src/Cake.Console.Tests/Cake.Console.Tests.csproj -- {cmd}"));
+
+    using (var process = host.Context.ProcessRunner.Start("dotnet", settings))
     {
-        process.WaitForExit();
         var t = string.Join("\n", process.GetStandardOutput());
         var err = string.Join("\n", process.GetStandardError());
-
         return t + err;
     }
 }
