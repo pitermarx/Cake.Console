@@ -16,7 +16,7 @@ Create a new project referencing Cake.Console. It will look something like this
     <TargetFramework>net5.0</TargetFramework>
     <OutputType>exe</OutputType>
   </PropertyGroup>
-    
+
   <ItemGroup>
     <PackageReference Include="Cake.Console" Version="1.2.0" />
   </ItemGroup>
@@ -46,6 +46,7 @@ new CakeHostBuilder()
     .ContextData<BuildData>()
     .RegisterTasks<CakeTasks>()
     .InstallNugetTool("NuGet.CommandLine", "5.9.1")
+    .InstallDotnetTool("GitVersion.Tool", "5.7.0")
     .RunCakeCli(args);
 ```
 
@@ -60,7 +61,7 @@ In this case, we dont have access to the host, so we need to define the build wi
 Here we can use a class that has the interface IWorkingDirectory and implements the string WorkingDirectory property.
 
 The class can receive in the constructor any part of the cake infrastructure (ICakeContext, ICakeLog, ICakeArguments, ICakeConfiguration...)
-    
+
 ## RegisterTasks<>
 Here we can use a class that has the interface ICakeTasks.
 
@@ -71,8 +72,8 @@ All the methods that have the signature `void Name(CakeTaskBuilder builder)` wil
 ## ContextData<>
 Here we can use any class that will then be available for use in the task's definitions.
 
-## InstallNugetTool
-Given a package name and a version, installs a nuget package as a [Cake tool](https://cakebuild.net/docs/writing-builds/tools/installing-tools)
+## InstallNugetTool/InstallDotnetTool
+Given a package name and a version, installs a nuget package or a dotnet tool as a [Cake tool](https://cakebuild.net/docs/writing-builds/tools/installing-tools)
 
 # Summary
 Putting it all together

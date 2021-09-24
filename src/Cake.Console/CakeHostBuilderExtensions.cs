@@ -5,6 +5,9 @@ namespace Cake.Console
 {
     public static class CakeHostBuilderExtensions
     {
+        public static CakeHostBuilder InstallDotnetTool(this CakeHostBuilder builder, string id, string version) => builder
+            .ConfigureServices(s => s.RegisterInstance(new CakeDotnetTool(id, version)).As<ICakeToolReference>().Singleton());
+
         public static CakeHostBuilder InstallNugetTool(this CakeHostBuilder builder, string id, string version) => builder
             .ConfigureServices(s => s.RegisterInstance(new CakeNugetTool(id, version)).As<ICakeToolReference>().Singleton());
 

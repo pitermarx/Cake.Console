@@ -9,6 +9,7 @@ using Cake.Core.Composition;
 using Cake.Core.Configuration;
 using Cake.Core.Diagnostics;
 using Cake.Core.Modules;
+using Cake.DotNetTool.Module;
 using Cake.NuGet;
 using Microsoft.Extensions.DependencyInjection;
 using IBuilder = Cake.Core.Composition.ICakeRegistrationBuilder;
@@ -24,6 +25,7 @@ namespace Cake.Console.Internals
             services = new List<Builder>();
             new CoreModule().Register(this);
             new NuGetModule().Register(this);
+            new DotNetToolModule().Register(this);
 
             // Configuration will also contain the arguments
             this.RegisterType<CakeConfigurationProvider>().AsSelf().Singleton();

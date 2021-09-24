@@ -13,7 +13,7 @@ using System;
 
 var proj = "src/Cake.Console/Cake.Console.csproj";
 var testProj = "src/Cake.Console.Tests/Cake.Console.Tests.csproj";
-var version = "1.2.0.4";
+var version = "1.2.0.5";
 var config = "Release";
 
 var host = new CakeHostBuilder().BuildHost(args);
