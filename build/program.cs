@@ -13,7 +13,7 @@ using System;
 
 var proj = "src/Cake.Console/Cake.Console.csproj";
 var testProj = "src/Cake.Console.Tests/Cake.Console.Tests.csproj";
-var version = "1.2.0.5";
+var version = "1.3.0";
 var config = "Release";
 
 var host = new CakeHostBuilder().BuildHost(args);
@@ -54,27 +54,35 @@ var tests = new []{
 
 host.Task("Test")
     .IsDependentOn("Build")
-    .DoesForEach(tests, (t, c) => c.Verify($"Test_{t.Replace(" ", "_")}", s =>
-    {
-        s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
-        return Run(t);
-    }));
+    .DoesForEach(
+        tests,
+        (t, c) => c.Verify(
+            $"Test_{t.Replace(" ", "_")}",
+            s =>
+            {
+                s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
+                return Run(t);
+            }));
 
 host.Task("Pack")
     .IsDependentOn("Test")
     .Does(c => c.DotNetCorePack(proj, new DotNetCorePackSettings { Configuration = config, NoBuild = true, NoLogo = true }));
 
 host.Task("Push")
-    .WithCriteria(c => c.GitHubActions().IsRunningOnGitHubActions)
+    .WithCriteria(c => c.GitHubActions().IsRunningOnGitHubActions &&
+                       c.HasEnvironmentVariable("NUGET_API_KEY"))
     .IsDependentOn("Pack")
-    .Does(c => c.DotNetCoreNuGetPush(
-        c.GetFiles($"**/Cake.Console.{version}.nupkg").First().FullPath,
-        new DotNetCoreNuGetPushSettings
-        {
-            ApiKey = c.Environment.GetEnvironmentVariable("NUGET_API_KEY"),
-            Source = c.Environment.GetEnvironmentVariable("PUSH_SOURCE"),
-            SkipDuplicate = true
-        }));
+    .Does(c =>
+    {
+        c.DotNetCoreNuGetPush(
+            c.GetFiles($"**/Cake.Console.{version}.nupkg").First().FullPath,
+            new DotNetCoreNuGetPushSettings
+            {
+                ApiKey = c.Environment.GetEnvironmentVariable("NUGET_API_KEY"),
+                Source = c.Environment.GetEnvironmentVariable("PUSH_SOURCE"),
+                SkipDuplicate = true
+            });
+    });
 
 host.Task("Default")
     .IsDependentOn("Push");
