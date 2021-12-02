@@ -79,7 +79,8 @@ host.Task("Push")
             new DotNetCoreNuGetPushSettings
             {
                 ApiKey = c.Environment.GetEnvironmentVariable("NUGET_API_KEY"),
-                SkipDuplicate = true
+                SkipDuplicate = true,
+                Source = " https://api.nuget.org/v3/index.json"
             });
     });
 
