@@ -13,7 +13,7 @@ using System;
 
 var proj = "src/Cake.Console/Cake.Console.csproj";
 var testProj = "src/Cake.Console.Tests/Cake.Console.Tests.csproj";
-var version = "1.3.0";
+var version = "2.0.0";
 var config = "Release";
 
 var host = new CakeHostBuilder().BuildHost(args);
@@ -79,7 +79,6 @@ host.Task("Push")
             new DotNetCoreNuGetPushSettings
             {
                 ApiKey = c.Environment.GetEnvironmentVariable("NUGET_API_KEY"),
-                Source = c.Environment.GetEnvironmentVariable("PUSH_SOURCE"),
                 SkipDuplicate = true
             });
     });
@@ -94,7 +93,7 @@ string Run(string cmd)
     var settings = new ProcessSettings()
         .SetRedirectStandardOutput(true)
         .SetRedirectStandardError(true)
-        .WithArguments(a => a.Append($"run -p {testProj} -c={config} --no-build -- {cmd}"));
+        .WithArguments(a => a.Append($"run --project {testProj} -c={config} --no-build -- {cmd}"));
 
     using (var process = host.Context.ProcessRunner.Start("dotnet", settings))
     {
