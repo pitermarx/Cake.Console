@@ -1,10 +1,10 @@
 ﻿using Cake.Console;
-using Cake.Common.Tools.DotNetCore;
+using Cake.Common.Tools.DotNet;
 using Cake.Common.Build;
 using Cake.Core;
-using Cake.Common.Tools.DotNetCore.Build;
-using Cake.Common.Tools.DotNetCore.Pack;
-using Cake.Common.Tools.DotNetCore.NuGet.Push;
+using Cake.Common.Tools.DotNet.Build;
+using Cake.Common.Tools.DotNet.Pack;
+using Cake.Common.Tools.DotNet.NuGet.Push;
 using Cake.Core.IO;
 using System.Linq;
 using Cake.Common.IO;
@@ -26,9 +26,9 @@ host.Task("Build")
     .IsDependentOn("Clean")
     .Does(c =>
     {
-        var sett = new DotNetCoreBuildSettings { Configuration = config, NoLogo = true };
-        c.DotNetCoreBuild(proj, sett);
-        c.DotNetCoreBuild(testProj, sett);
+        var sett = new DotNetBuildSettings { Configuration = config, NoLogo = true };
+        c.DotNetBuild(proj, sett);
+        c.DotNetBuild(testProj, sett);
     });
 
 var tests = new []{
@@ -66,7 +66,7 @@ host.Task("Test")
 
 host.Task("Pack")
     .IsDependentOn("Test")
-    .Does(c => c.DotNetCorePack(proj, new DotNetCorePackSettings { Configuration = config, NoBuild = true, NoLogo = true }));
+    .Does(c => c.DotNetPack(proj, new DotNetPackSettings { Configuration = config, NoBuild = true, NoLogo = true }));
 
 host.Task("Push")
     .WithCriteria(c => c.GitHubActions().IsRunningOnGitHubActions &&
@@ -74,9 +74,9 @@ host.Task("Push")
     .IsDependentOn("Pack")
     .Does(c =>
     {
-        c.DotNetCoreNuGetPush(
+        c.DotNetNuGetPush(
             c.GetFiles($"**/Cake.Console.{version}.nupkg").First().FullPath,
-            new DotNetCoreNuGetPushSettings
+            new DotNetNuGetPushSettings
             {
                 ApiKey = c.Environment.GetEnvironmentVariable("NUGET_API_KEY"),
                 SkipDuplicate = true,
