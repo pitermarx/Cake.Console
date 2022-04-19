@@ -18,7 +18,7 @@ Create a new project referencing Cake.Console. It will look something like this
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cake.Console" Version="1.2.0" />
+    <PackageReference Include="Cake.Console" Version="2.2.0" />
   </ItemGroup>
 </Project>
 ```
@@ -119,4 +119,12 @@ class CakeTasks : ICakeTasks
         .IsDependentOn(nameof(TaskName))
         .Does<ContextData>(data => ctx.Information(data.SomeVeryImportantData));
 }
+```
+
+It is also possible to use [dotnet-script](https://github.com/filipw/dotnet-script).
+[Thanks](https://github.com/pitermarx/Cake.Console/issues/11#issuecomment-1102590201) @badsim
+See an example in ./dotnet-script/test.csx
+
+```bash
+dotnet script --isolated-load-context ./dotnet-script/test.csx --target=test
 ```
