@@ -1,8 +1,8 @@
-# Cake.Console ![Nuget](https://img.shields.io/nuget/v/cake.console?label=cake.console&style=plastic)
+# Cake.Console [![Nuget](https://img.shields.io/nuget/v/cake.console?label=cake.console&style=plastic)](https://www.nuget.org/packages/Cake.Console)
 
 [Cake](https://cakebuild.net/) scripts, but in a Console app.
 
-An alternative to Cake.Frosting
+An alternative to [Cake.Frosting](https://cakebuild.net/docs/running-builds/runners/cake-frosting)
 
 https://blog.pitermarx.com/2021/09/presenting-cake-console/
 
