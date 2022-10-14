@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <!-- TODO: a smarter way to keep in sync with cake -->
-    <CakeVersion>2.2.0</CakeVersion>
-    <Version>2.2.0</Version>
+    <CakeVersion>2.3.0</CakeVersion>
+    <Version>2.3.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <PackageVersion>$(Version)</PackageVersion>
     <FileVersion>$(Version)</FileVersion>
