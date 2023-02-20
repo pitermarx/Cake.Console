@@ -22,6 +22,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,5 +32,9 @@
     <PackageReference Include="Cake.DotNetTool.Module" Version="$(CakeVersion)" />
     <PackageReference Include="Cake.Cli" Version="$(CakeVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\README.md" PackagePath=""/>
   </ItemGroup>
 </Project>
