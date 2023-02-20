@@ -34,7 +34,7 @@ namespace Cake.Console.CommandApp
             [CommandOption("--target|-t <TARGET>")]
             [DefaultValue("Default")]
             [Description("Target task to invoke.")]
-            public string Target { get; set; }
+            public string? Target { get; set; }
 
             [CommandOption("--verbosity|-v <VERBOSITY>")]
             [Description("Specifies the amount of information to be displayed.\n(Quiet, Minimal, Normal, Verbose, Diagnostic)")]
@@ -83,9 +83,9 @@ namespace Cake.Console.CommandApp
 
             ScriptHost host = settings switch
             {
-                {DryRun: true} => ConfigureAndBuild<DryRunScriptHost>(),
-                {Description: true} => ConfigureAndBuild<DescriptionScriptHost>(),
-                {Tree: true} => ConfigureAndBuild<TreeScriptHost>(),
+                { DryRun: true } => ConfigureAndBuild<DryRunScriptHost>(),
+                { Description: true } => ConfigureAndBuild<DescriptionScriptHost>(),
+                { Tree: true } => ConfigureAndBuild<TreeScriptHost>(),
                 _ => ConfigureAndBuild<CakeHost>()
             };
 
@@ -97,7 +97,7 @@ namespace Cake.Console.CommandApp
 
             T ConfigureAndBuild<T>() where T : class, IScriptHost
             {
-                var args = new CakeConsoleArguments(context.Remaining.Parsed, settings.Verbosity);
+                var args = new CakeConsoleArguments(context.Remaining.Parsed!, settings.Verbosity);
                 return builder.ConfigureServices(s => s.RegisterType<T>().AsSelf().Singleton()).BuildScriptHost<T>(args);
             }
         }

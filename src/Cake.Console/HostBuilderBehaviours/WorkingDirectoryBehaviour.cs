@@ -14,7 +14,12 @@ namespace Cake.Console.HostBuilderBehaviours
         public WorkingDirectoryBehaviour(ICakeContext ctx, IEnumerable<IWorkingDirectory> workingDirectory)
         {
             this.ctx = ctx;
-            this.workingDirectory = workingDirectory.SingleOrDefault();
+            this.workingDirectory = workingDirectory.FirstOrDefault() ?? throw new System.Exception("No working directories found");
+
+            if (workingDirectory.Count() > 1)
+            {
+                throw new System.Exception("More than one working directory specified");
+            }
         }
 
         public void Run()

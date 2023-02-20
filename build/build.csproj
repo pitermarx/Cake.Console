@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
     <OutputType>exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cake.Console" Version="2.2.0" />
-    <PackageReference Include="verify" Version="11.27.0" />
+    <PackageReference Include="Cake.Console" Version="2.3.0" />
+    <PackageReference Include="verify" Version="19.10.0" />
   </ItemGroup>
 </Project>

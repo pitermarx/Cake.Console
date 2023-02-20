@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Cake.Common.Diagnostics;
 using Cake.Core;
@@ -23,7 +25,7 @@ namespace Cake.Console.Internals
             this.strategy = strategy;
         }
 
-        public override async Task<CakeReport> RunTargetAsync(string target)
+        public override Task<CakeReport>? RunTargetAsync(string target)
         {
             if (target is null)
             {
@@ -31,9 +33,28 @@ namespace Cake.Console.Internals
                 return null;
             }
 
+            Settings.SetTarget(target);
+
+            return Run();
+        }
+
+        public override Task<CakeReport>? RunTargetsAsync(IEnumerable<string> targets)
+        {
+            if (targets?.Any() != true)
+            {
+                Context.Information("No targets specified");
+                return null;
+            }
+
+            Settings.SetTargets(targets);
+
+            return Run();
+        }
+
+        private async Task<CakeReport> Run()
+        {
             try
             {
-                Settings.SetTarget(target);
                 var report = await Engine.RunTargetAsync(Context, strategy, Settings);
                 printer.Write(report);
 

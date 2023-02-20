@@ -31,9 +31,9 @@ namespace Cake.Console.Internals
             this.RegisterType<CakeConfigurationProvider>().AsSelf().Singleton();
             RegisterFactory(provider =>
             {
-                var cakeArgs = provider.GetService<ICakeArguments>();
+                var cakeArgs = provider.GetRequiredService<ICakeArguments>();
                 var argDic = cakeArgs.GetArguments().ToDictionary(a => a.Key, a => a.Value.First());
-                return provider.GetService<CakeConfigurationProvider>().CreateConfiguration(".", argDic);
+                return provider.GetRequiredService<CakeConfigurationProvider>().CreateConfiguration(".", argDic);
             }).As<ICakeConfiguration>().Singleton();
 
             // Logging
@@ -101,11 +101,11 @@ namespace Cake.Console.Internals
         internal class Builder : IBuilder
         {
             private readonly Type implementationType;
-            private readonly object implementationInstance;
+            private readonly object? implementationInstance;
             private Type serviceType;
             private ServiceLifetime lifetime;
 
-            public Builder(Type impl, object instance = null)
+            public Builder(Type impl, object? instance = null)
             {
                 implementationType = impl;
                 implementationInstance = instance;

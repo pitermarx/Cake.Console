@@ -20,7 +20,7 @@ namespace Cake.Console.Internals
             log = new CakeBuildLog(console, Verbosity.Normal);
             if ((config.GetValue("verbosity") ?? config.GetValue("v")) is string v)
             {
-                log.Verbosity = (Verbosity)new VerbosityConverter().ConvertFrom(v);
+                log.Verbosity = (Verbosity)(new VerbosityConverter().ConvertFrom(v) ?? throw new System.Exception($"Could not parse verbosity {v}"));
             }
         }
 

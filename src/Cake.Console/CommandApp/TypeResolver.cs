@@ -9,7 +9,7 @@ namespace Cake.Console.CommandApp
         public TypeResolver(IServiceProvider provider)
             => this.provider = provider;
 
-        public object Resolve(Type type)
-            => provider.GetService(type) ?? new NullReferenceException($"Type {type.Name} not found");
+        public object Resolve(Type? type)
+            => (type is null ? null : provider.GetService(type)) ?? throw new NullReferenceException($"Type {type?.Name} not found");
     }
 }

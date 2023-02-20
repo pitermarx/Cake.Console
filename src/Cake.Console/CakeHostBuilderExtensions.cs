@@ -17,7 +17,7 @@ namespace Cake.Console
         public static CakeHostBuilder WorkingDirectory<T>(this CakeHostBuilder builder) where T : class, IWorkingDirectory => builder
             .ConfigureServices(s => s.RegisterType(typeof(T)).As<IWorkingDirectory>().Singleton());
 
-        public static CakeHostBuilder ContextData<T>(this CakeHostBuilder builder, T instance = null) where T : class => builder
+        public static CakeHostBuilder ContextData<T>(this CakeHostBuilder builder, T? instance = null) where T : class => builder
             .ConfigureServices(s => s.RegisterInstance(instance).As<T>().Singleton())
             .ConfigureServices(s => s.RegisterType<SetupContextDataBehaviour<T>>().As<IHostBuilderBehaviour>().Singleton());
     }

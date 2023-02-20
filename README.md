@@ -18,7 +18,7 @@ Create a new project referencing Cake.Console. It will look something like this
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cake.Console" Version="2.3.0" />
+    <PackageReference Include="Cake.Console" Version="3.0.0" />
   </ItemGroup>
 </Project>
 ```

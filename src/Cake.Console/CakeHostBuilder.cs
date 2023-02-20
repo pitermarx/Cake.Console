@@ -41,7 +41,7 @@ namespace Cake.Console
                 .AddSingleton<IScriptHost, T>()
                 .BuildServiceProvider();
 
-            var host = provider.GetService<T>();
+            var host = provider.GetRequiredService<T>();
 
             foreach (var behaviour in provider.GetServices<IHostBuilderBehaviour>())
             {
