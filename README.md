@@ -13,7 +13,7 @@ Create a new project referencing Cake.Console. It will look something like this
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <OutputType>exe</OutputType>
   </PropertyGroup>
 
