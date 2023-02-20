@@ -13,7 +13,8 @@ using System;
 
 var proj = "src/Cake.Console/Cake.Console.csproj";
 var testProj = "src/Cake.Console.Tests/Cake.Console.Tests.csproj";
-var version = "3.0.0";
+var version = Environment.GetEnvironmentVariable("CakeConsoleVersion");
+var cakeversion = Environment.GetEnvironmentVariable("CakeVersion");
 var config = "Release";
 
 var host = new CakeHostBuilder().BuildHost(args);
@@ -26,12 +27,16 @@ host.Task("Build")
     .IsDependentOn("Clean")
     .Does(c =>
     {
-        var sett = new DotNetBuildSettings { Configuration = config, NoLogo = true };
-        c.DotNetBuild(proj, sett);
+        var sett = new DotNetBuildSettings
+        {
+            Configuration = config,
+            NoLogo = true,
+            ArgumentCustomization = c => c.Append($"/p:CakeVersion={cakeversion} /p:Version={version}")
+        };
         c.DotNetBuild(testProj, sett);
     });
 
-var tests = new []{
+var tests = new[]{
     "unknown",
     "host",
     "cli",

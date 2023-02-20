@@ -9,17 +9,12 @@ namespace Cake.Console.HostBuilderBehaviours
     internal class WorkingDirectoryBehaviour : IHostBuilderBehaviour
     {
         private readonly ICakeContext ctx;
-        private readonly IWorkingDirectory workingDirectory;
+        private readonly IWorkingDirectory? workingDirectory;
 
         public WorkingDirectoryBehaviour(ICakeContext ctx, IEnumerable<IWorkingDirectory> workingDirectory)
         {
             this.ctx = ctx;
-            this.workingDirectory = workingDirectory.FirstOrDefault() ?? throw new System.Exception("No working directories found");
-
-            if (workingDirectory.Count() > 1)
-            {
-                throw new System.Exception("More than one working directory specified");
-            }
+            this.workingDirectory = workingDirectory.SingleOrDefault();
         }
 
         public void Run()

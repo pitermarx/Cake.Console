@@ -30,7 +30,7 @@ public static class VerifyExtensions
 
         var received = action(settings);
 
-        var verifier = new InnerVerifier(callerFile, settings, t.Name, callerMember, Array.Empty<string>(), new PathInfo("."));
+        var verifier = new InnerVerifier(callerFile!, settings, t.Name, callerMember!, Array.Empty<string>(), new PathInfo("."));
         return verifier.Verify(received);
     }
 }
