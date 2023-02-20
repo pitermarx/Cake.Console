@@ -71,7 +71,13 @@ host.Task("Test")
 
 host.Task("Pack")
     .IsDependentOn("Test")
-    .Does(c => c.DotNetPack(proj, new DotNetPackSettings { Configuration = config, NoBuild = true, NoLogo = true }));
+    .Does(c => c.DotNetPack(proj, new DotNetPackSettings
+    {
+        Configuration = config,
+        NoBuild = true,
+        NoLogo = true,
+        ArgumentCustomization = c => c.Append($"/p:CakeVersion={cakeversion} /p:Version={version}")
+    }));
 
 host.Task("Push")
     .WithCriteria(c => c.GitHubActions().IsRunningOnGitHubActions &&
