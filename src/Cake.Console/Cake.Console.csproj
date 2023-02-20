@@ -1,13 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Set these variables in the cli command /p:CakeVersion=3.0.0 /p:Version=3.0.0.1-->
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <CakeVersion>UNDEFINED</CakeVersion>
     <Version>UNDEFINED</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Cake scripts, but in a Console app</Description>
+    <PackageTags>cake build console</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/pitermarx/Cake.Console</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/pitermarx/Cake.Console</PackageProjectUrl>
+    <Authors>pitermarx</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <PackageVersion>$(Version)</PackageVersion>
     <FileVersion>$(Version)</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
