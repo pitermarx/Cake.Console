@@ -14,7 +14,7 @@ using Cake.Core.IO;
 const string config = "Release";
 const string proj = "src/Cake.Console/Cake.Console.csproj";
 const string testProj = "src/Cake.Console.Tests/Cake.Console.Tests.csproj";
-var version = Environment.GetEnvironmentVariable("CakeConsoleVersion");
+var version = Environment.GetEnvironmentVariable("VersionPrefix");
 var cakeversion = Environment.GetEnvironmentVariable("CakeVersion");
 
 var host = new CakeHostBuilder().BuildHost(args);
