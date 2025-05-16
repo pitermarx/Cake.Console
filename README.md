@@ -92,28 +92,19 @@ new CakeHostBuilder()
 
 record WorkingDir(string WorkingDirectory = ".") : IWorkingDirectory;
 
-class ContextData
+class ContextData(ICakeArguments args)
 {
-    public string SomeVeryImportantData { get; set; } = "Cake is awesome!";
-    public ContextData(ICakeArguments args)
-    {
-        if (args.HasArgument("tone-down"))
-        {
-            SomeVeryImportantData = "Cake is pretty good...";
-        }
-    }
+    public string SomeVeryImportantData { get; set; } =
+        args.HasArgument("tone-down") ? "Cake is pretty good..." : "Cake is awesome!";
 }
 
 
-class CakeTasks : ICakeTasks
+class CakeTasks(ICakeContext ctx) : ICakeTasks
 {
-    private readonly ICakeContext ctx;
 
-    public CakeTasks(ICakeContext ctx) => this.ctx = ctx;
-
-    public void TaskName(CakeTaskBuilder b) => b
+    public static void TaskName(CakeTaskBuilder b) => b
         .Description("Some task")
-        .Does(() => ctx.Information("Something"));
+        .Does(c => c.Information("Something"));
 
     public void AnotherTask(CakeTaskBuilder b) => b
         .IsDependentOn(nameof(TaskName))

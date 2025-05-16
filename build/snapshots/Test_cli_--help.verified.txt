@@ -2,16 +2,19 @@
     Cake.Console.Tests.dll [OPTIONS]
 
 OPTIONS:
-    -h, --help                     Prints help information                      
-    -t, --target <TARGET>          Target task to invoke                        
-    -v, --verbosity <VERBOSITY>    Specifies the amount of information to be    
-                                   displayed.                                   
-                                   (Quiet, Minimal, Normal, Verbose, Diagnostic)
-        --description              Shows description for each task              
-        --tree                     Shows the task dependency tree               
-        --dryrun                   Performs a dry run                           
-    -e, --exclusive                Executes the target task without any         
-                                   dependencies                                 
-        --version                  Displays version information                 
-        --info                     Displays additional information about Cake   
+                                   DEFAULT                                      
+    -h, --help                                Prints help information           
+    -t, --target <TARGET>          Default    Target task to invoke             
+    -v, --verbosity <VERBOSITY>    Normal     Specifies the amount of           
+                                              information to be displayed.      
+                                              (Quiet, Minimal, Normal, Verbose, 
+                                              Diagnostic)                       
+        --description                         Shows description for each task   
+        --tree                                Shows the task dependency tree    
+        --dryrun                              Performs a dry run                
+    -e, --exclusive                           Executes the target task without  
+                                              any dependencies                  
+        --version                             Displays version information      
+        --info                                Displays additional information   
+                                              about Cake                        
 OK

@@ -15,7 +15,7 @@ internal class TaskRegisteringBehaviour(IScriptHost host, IEnumerable<ICakeTasks
         {
             var classTasks = taskClass
                 .GetType()
-                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                 .Where(m =>
                 {
                     var parameters = m.GetParameters();

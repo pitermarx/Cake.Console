@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Set these variables in the cli command /p:CakeVersion=3.0.0 /p:Version=3.0.0.1-->
   <PropertyGroup>
     <CakeVersion>UNDEFINED</CakeVersion>
     <VersionPrefix>UNDEFINED</VersionPrefix>
@@ -29,7 +28,7 @@
     <PackageReference Include="Cake.Nuget" Version="$(CakeVersion)" />
     <PackageReference Include="Cake.DotNetTool.Module" Version="$(CakeVersion)" />
     <PackageReference Include="Cake.Cli" Version="$(CakeVersion)" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>

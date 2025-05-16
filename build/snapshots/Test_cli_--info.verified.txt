@@ -26,6 +26,6 @@
 \____/\__,_|_|\_\___\_____/\__,_|_|_|\__,_|
 
 Version: Unknown
-Details: 1.0.0
+Details: 1.2.3+{Hash}
 
 OK

@@ -24,4 +24,4 @@ jobs:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         CakeVersion: 5.0.0
-        CakeConsoleVersion: 5.0.0-pre
+        VersionPrefix: 5.0.0

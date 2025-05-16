@@ -1,6 +1,7 @@
-﻿using build;
+﻿using System.Text.RegularExpressions;
 using Cake.Common;
 using Cake.Common.Build;
+using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNet;
 using Cake.Common.Tools.DotNet.Build;
@@ -36,42 +37,30 @@ host.Task("Build")
         c.DotNetBuild(testProj, sett);
     });
 
-var tests = new[]
-{
-    "unknown",
-    "host",
-    "cli",
-    "cli --target=task2",
-    "cli --target=task1 -v=Diagnostic",
-    "cli --target=task1",
-    "cli --target=taskB",
-    "cli --target=taskB --exclusive",
-    "cli --description",
-    "cli --dryrun",
-    "cli --dryrun --target=TaskB",
-    "cli --dryrun --target=TaskB --exclusive",
-    "cli --version",
-    "cli --info",
-    "cli --tree",
-    "cli --help",
-    "cli -h",
-    "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello",
-};
-
+var pwd = Environment.CurrentDirectory;
+var s = new VerifySettings();
+s.DisableDiff();
+s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
+s.ScrubLinesWithReplace(l => l.Replace(pwd, "{CurrentDirectory}"));
+s.ScrubLinesWithReplace(l =>
+    new Regex(@"Details: 1\.2\.3\+.*").Replace(l, "Details: 1.2.3+{Hash}")
+);
 host.Task("Test")
     .IsDependentOn("Build")
-    .DoesForEach(
-        tests,
-        (t, c) =>
-            c.Verify(
-                $"Test_{t.Replace(" ", "_")}",
-                s =>
-                {
-                    s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
-                    return Run(t);
-                }
-            )
-    );
+    .Does(async c =>
+    {
+        var currentDir = System.IO.Path.Combine(pwd, "build\\snapshots");
+        var testFiles = Directory
+            .EnumerateFiles(currentDir, "*.verified.txt")
+            .Select(System.IO.Path.GetFileName)
+            .Select(f => f!.Replace(".verified.txt", ""));
+        foreach (var t in testFiles)
+        {
+            var cmd = t!.Replace("Test_", "").Replace("_", " ");
+            var result = Run(cmd);
+            await new InnerVerifier("build\\snapshots", t, s).Verify(result);
+        }
+    });
 
 host.Task("Pack")
     .IsDependentOn("Test")
@@ -113,10 +102,15 @@ host.RunTarget(host.Context.Argument("target", "default"));
 
 string Run(string cmd)
 {
+    // find dll
+    var dll = host
+        .Context.GetFiles("src/Cake.Console.Tests/bin/Release/*/Cake.Console.Tests.dll")
+        .First();
+    host.Context.Information($"Running: dotnet {dll} {cmd}");
     var settings = new ProcessSettings()
         .SetRedirectStandardOutput(true)
         .SetRedirectStandardError(true)
-        .WithArguments(a => a.Append($"run --project {testProj} -c={config} --no-build -- {cmd}"));
+        .WithArguments(a => a.Append($"{dll} {cmd}"));
 
     using var process = host.Context.ProcessRunner.Start("dotnet", settings);
     var t = string.Join("\n", process.GetStandardOutput());

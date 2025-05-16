@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>exe</OutputType>
+    <Version>1.2.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
