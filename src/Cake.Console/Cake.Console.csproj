@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <CakeVersion>UNDEFINED</CakeVersion>
-    <VersionPrefix>UNDEFINED</VersionPrefix>
+    <CakeVersion>5.0.0</CakeVersion>
   </PropertyGroup>
 
   <PropertyGroup>
