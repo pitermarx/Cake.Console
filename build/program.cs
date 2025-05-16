@@ -43,7 +43,6 @@ if (host.Context.GitHubActions().IsRunningOnGitHubActions)
 {
     s.DisableDiff();
 }
-
 s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
 s.ScrubLinesWithReplace(l => l.Replace(pwd, "{CurrentDirectory}"));
 s.ScrubLinesWithReplace(l =>
@@ -53,16 +52,32 @@ host.Task("Test")
     .IsDependentOn("Build")
     .Does(async c =>
     {
-        var currentDir = System.IO.Path.Combine(pwd, "build\\snapshots");
-        var testFiles = Directory
-            .EnumerateFiles(currentDir, "*.verified.txt")
-            .Select(System.IO.Path.GetFileName)
-            .Select(f => f!.Replace(".verified.txt", ""));
-        foreach (var t in testFiles)
+        var tests = new[]
         {
-            var cmd = t!.Replace("Test_", "").Replace("_", " ");
-            var result = Run(cmd);
-            await new InnerVerifier("build\\snapshots", t, s).Verify(result);
+            "unknown",
+            "host",
+            "cli",
+            "cli --target=task2",
+            "cli --target=task1 -v=Diagnostic",
+            "cli --target=task1",
+            "cli --target=taskB",
+            "cli --target=taskB --exclusive",
+            "cli --description",
+            "cli --dryrun",
+            "cli --dryrun --target=TaskB",
+            "cli --dryrun --target=TaskB --exclusive",
+            "cli --version",
+            "cli --info",
+            "cli --tree",
+            "cli --help",
+            "cli -h",
+            "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello",
+        };
+        
+        foreach (var t in tests)
+        {
+            var result = Run(t);
+            await new InnerVerifier("build\\snapshots", $"Test_{t.Replace(" ", "_")}", s).Verify(result);
         }
     });
 
