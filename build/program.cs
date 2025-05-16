@@ -42,6 +42,7 @@ var s = new VerifySettings();
 s.DisableDiff();
 s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
 s.ScrubLinesWithReplace(l => l.Replace(pwd, "{CurrentDirectory}"));
+s.ScrubLinesWithReplace(l => new string(l.Where(c => !char.IsControl(c)).ToArray()));
 s.ScrubLinesWithReplace(l =>
     new Regex(@"Details: 1\.2\.3\+.*").Replace(l, "Details: 1.2.3+{Hash}")
 );
