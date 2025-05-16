@@ -39,6 +39,11 @@ host.Task("Build")
 
 var pwd = Environment.CurrentDirectory;
 var s = new VerifySettings();
+if (host.Context.GitHubActions().IsRunningOnGitHubActions)
+{
+    s.DisableDiff();
+}
+
 s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
 s.ScrubLinesWithReplace(l => l.Replace(pwd, "{CurrentDirectory}"));
 s.ScrubLinesWithReplace(l =>
