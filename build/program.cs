@@ -32,7 +32,7 @@ host.Task("Build")
             Configuration = config,
             NoLogo = true,
             ArgumentCustomization = builder =>
-                builder.Append($"/p:CakeVersion={cakeversion} /p:VersionPrefix={version}"),
+                builder.Append($"/p:VersionPrefix={version}"),
         };
         c.DotNetBuild(testProj, sett);
     });
