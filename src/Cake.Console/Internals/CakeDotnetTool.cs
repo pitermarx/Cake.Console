@@ -1,15 +1,9 @@
 using Cake.Core.Packaging;
-using System;
 
-namespace Cake.Console
+namespace Cake.Console.Internals;
+
+internal class CakeDotnetTool(string id, string version) : ICakeToolReference
 {
-    internal class CakeDotnetTool : ICakeToolReference
-    {
-        public PackageReference Reference { get; }
-
-        public CakeDotnetTool(string id, string version)
-        {
-            Reference = new PackageReference(new Uri($"dotnet:?package={id}&version={version}"));
-        }
-    }
+    public PackageReference Reference { get; } =
+        new(new Uri($"dotnet:?package={id}&version={version}"));
 }

@@ -1,15 +1,9 @@
 using Cake.Core.Packaging;
-using System;
 
-namespace Cake.Console
+namespace Cake.Console.Internals;
+
+internal class CakeNugetTool(string id, string version) : ICakeToolReference
 {
-    internal class CakeNugetTool : ICakeToolReference
-    {
-        public PackageReference Reference { get; }
-
-        public CakeNugetTool(string id, string version)
-        {
-            Reference = new PackageReference(new Uri($"nuget:?package={id}&version={version}"));
-        }
-    }
+    public PackageReference Reference { get; } =
+        new(new Uri($"nuget:?package={id}&version={version}"));
 }

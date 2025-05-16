@@ -1,21 +1,24 @@
-using Cake.Console;
-using Cake.Core;
-using Cake.Common.Diagnostics;
 using System;
 using System.Linq;
+using Cake.Common.Diagnostics;
+using Cake.Common.Tools.XUnit;
+using Cake.Console;
+using Cake.Core;
 
 var message = args.FirstOrDefault() switch
 {
     "host" => BuildHost(),
     "cli" => RunCli(),
-    var action => $"action '{action ?? "null"}' not defined"
+    var action => $"action '{action ?? "null"}' not defined",
 };
 
 Console.WriteLine(message);
 
 string BuildHost()
 {
-    var host = new CakeHostBuilder().BuildHost(args.Skip(1));
+    var host = new CakeHostBuilder()
+        .InstallNugetTool("xunit.runner.console", "2.9.3")
+        .BuildHost(args.Skip(1));
     var tasks = new Tasks();
     tasks.Task1(host.Task("Task1"));
     host.RunTarget("Task1");
@@ -30,17 +33,26 @@ string RunCli()
     return "OK";
 }
 
-class Tasks : ICakeTasks
+internal class Tasks : ICakeTasks
 {
-    public void PrintArgs(CakeTaskBuilder b) => b.Does(c =>
-    {
-        foreach (var a in c.Arguments.GetArguments()) c.Information($"--{a.Key}={string.Join(",", a.Value)}");
-    });
+    public void PrintArgs(CakeTaskBuilder b) =>
+        b.Does(c =>
+        {
+            foreach (var a in c.Arguments.GetArguments())
+                c.Information($"--{a.Key}={string.Join(",", a.Value)}");
+        });
 
     public void Task1(CakeTaskBuilder b) => b.Does(c => c.Information("Task1 executed"));
+
     public void Task2(CakeTaskBuilder b) => b.Does(c => c.Information("Task2 executed"));
+
     public void TaskA(CakeTaskBuilder b) => b.Does(c => c.Information("TaskA executed"));
-    public void TaskB(CakeTaskBuilder b) => b.IsDependentOn("TaskA").Does(c => c.Information("TaskB executed"));
+
+    public void TaskB(CakeTaskBuilder b) =>
+        b.IsDependentOn("TaskA").Does(c => c.Information("TaskB executed"));
+
     public void TaskC(CakeTaskBuilder b) => b.IsDependentOn("TaskB").Description("hello");
-    public void TaskD(CakeTaskBuilder b) => b.IsDependentOn("TaskB").Description("Some random text (&($/# /hda");
+
+    public void TaskD(CakeTaskBuilder b) =>
+        b.IsDependentOn("TaskB").Description("Some random text (&($/# /hda");
 }

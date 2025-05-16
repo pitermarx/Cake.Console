@@ -1,43 +1,34 @@
+using System.Reflection;
 using Cake.Common.Diagnostics;
 using Cake.Core;
 using Cake.Core.Scripting;
-using System.Reflection;
-using System.Linq;
-using System.Collections.Generic;
 
-namespace Cake.Console.HostBuilderBehaviours
+namespace Cake.Console.HostBuilderBehaviours;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+internal class TaskRegisteringBehaviour(IScriptHost host, IEnumerable<ICakeTasks> tasks)
+    : IHostBuilderBehaviour
 {
-    internal class TaskRegisteringBehaviour : IHostBuilderBehaviour
+    public void Run()
     {
-        private readonly IScriptHost host;
-        private readonly IEnumerable<ICakeTasks> tasks;
-
-        public TaskRegisteringBehaviour(IScriptHost host, IEnumerable<ICakeTasks> tasks)
+        foreach (var taskClass in tasks ?? [])
         {
-            this.host = host;
-            this.tasks = tasks;
-        }
-
-        public void Run()
-        {
-            foreach (var taskClass in tasks ?? Enumerable.Empty<ICakeTasks>())
-            {
-                var tasks = taskClass.GetType()
-                    .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(m =>
-                    {
-                        var parameters = m.GetParameters();
-
-                        return parameters.Length == 1 &&
-                            parameters[0].ParameterType == typeof(CakeTaskBuilder) &&
-                            m.ReturnType == typeof(void);
-                    });
-
-                foreach (var t in tasks)
+            var classTasks = taskClass
+                .GetType()
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m =>
                 {
-                    host.Context.Debug($"Registering task {t.Name}");
-                    t.Invoke(taskClass, new[] { host.Task(t.Name) });
-                }
+                    var parameters = m.GetParameters();
+
+                    return parameters.Length == 1
+                        && parameters[0].ParameterType == typeof(CakeTaskBuilder)
+                        && m.ReturnType == typeof(void);
+                });
+
+            foreach (var t in classTasks)
+            {
+                host.Context.Debug($"Registering task {t.Name}");
+                t.Invoke(taskClass, [host.Task(t.Name)]);
             }
         }
     }

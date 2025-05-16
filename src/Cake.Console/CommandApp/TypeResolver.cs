@@ -1,15 +1,10 @@
-using System;
+using Spectre.Console.Cli;
 
-namespace Cake.Console.CommandApp
+namespace Cake.Console.CommandApp;
+
+internal sealed class TypeResolver(IServiceProvider provider) : ITypeResolver
 {
-    internal sealed class TypeResolver : Spectre.Console.Cli.ITypeResolver
-    {
-        private readonly IServiceProvider provider;
-
-        public TypeResolver(IServiceProvider provider)
-            => this.provider = provider;
-
-        public object Resolve(Type? type)
-            => (type is null ? null : provider.GetService(type)) ?? throw new NullReferenceException($"Type {type?.Name} not found");
-    }
+    public object Resolve(Type? type) =>
+        (type is null ? null : provider.GetService(type))
+        ?? throw new NullReferenceException($"Type {type?.Name} not found");
 }

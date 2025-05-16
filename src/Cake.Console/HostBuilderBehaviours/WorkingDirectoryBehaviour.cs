@@ -1,30 +1,24 @@
-using Cake.Common.IO;
 using Cake.Common.Diagnostics;
+using Cake.Common.IO;
 using Cake.Core;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Cake.Console.HostBuilderBehaviours
+namespace Cake.Console.HostBuilderBehaviours;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+internal class WorkingDirectoryBehaviour(
+    ICakeContext ctx,
+    IEnumerable<IWorkingDirectory> workingDirectory
+) : IHostBuilderBehaviour
 {
-    internal class WorkingDirectoryBehaviour : IHostBuilderBehaviour
+    private readonly IWorkingDirectory? workingDirectory = workingDirectory.SingleOrDefault();
+
+    public void Run()
     {
-        private readonly ICakeContext ctx;
-        private readonly IWorkingDirectory? workingDirectory;
-
-        public WorkingDirectoryBehaviour(ICakeContext ctx, IEnumerable<IWorkingDirectory> workingDirectory)
-        {
-            this.ctx = ctx;
-            this.workingDirectory = workingDirectory.SingleOrDefault();
-        }
-
-        public void Run()
-        {
-            if (workingDirectory is IWorkingDirectory wd)
-            {
-                var dir = ctx.Directory(wd.WorkingDirectory).Path.MakeAbsolute(ctx.Environment);
-                ctx.Environment.WorkingDirectory = dir;
-                ctx.Debug($"Working directory changed to '{dir}'");
-            }
-        }
+        if (workingDirectory == null)
+            return;
+        var dir = ctx.Directory(workingDirectory.WorkingDirectory)
+            .Path.MakeAbsolute(ctx.Environment);
+        ctx.Environment.WorkingDirectory = dir;
+        ctx.Debug($"Working directory changed to '{dir}'");
     }
 }

@@ -1,71 +1,58 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Cake.Common.Diagnostics;
 using Cake.Core;
-using Cake.Core.Diagnostics;
 using Cake.Core.Scripting;
 
-namespace Cake.Console.Internals
+namespace Cake.Console.Internals;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+internal class CakeHost(
+    ICakeEngine engine,
+    ICakeContext context,
+    ICakeReportPrinter printer,
+    IExecutionStrategy strategy
+) : ScriptHost(engine, context)
 {
-    internal class CakeHost : ScriptHost
+    public override Task<CakeReport>? RunTargetAsync(string? target)
     {
-        private readonly IExecutionStrategy strategy;
-        private readonly ICakeReportPrinter printer;
-
-        public CakeHost(
-            ICakeEngine engine,
-            ICakeContext context,
-            ICakeReportPrinter printer,
-            IExecutionStrategy strategy)
-            : base(engine, context)
+        if (target is null)
         {
-            this.printer = printer;
-            this.strategy = strategy;
+            Context.Information("No target specified");
+            return null;
         }
 
-        public override Task<CakeReport>? RunTargetAsync(string target)
+        Settings.SetTarget(target);
+
+        return Run();
+    }
+
+    public override Task<CakeReport>? RunTargetsAsync(IEnumerable<string>? targets)
+    {
+        var enumerable = targets as string[] ?? targets?.ToArray() ?? [];
+        if (enumerable.Length == 0)
         {
-            if (target is null)
-            {
-                Context.Information("No target specified");
-                return null;
-            }
-
-            Settings.SetTarget(target);
-
-            return Run();
+            Context.Information("No targets specified");
+            return null;
         }
 
-        public override Task<CakeReport>? RunTargetsAsync(IEnumerable<string> targets)
+        Settings.SetTargets(enumerable);
+
+        return Run();
+    }
+
+    private async Task<CakeReport> Run()
+    {
+        try
         {
-            if (targets?.Any() != true)
-            {
-                Context.Information("No targets specified");
-                return null;
-            }
+            var report = await Engine.RunTargetAsync(Context, strategy, Settings);
+            printer.Write(report);
 
-            Settings.SetTargets(targets);
-
-            return Run();
+            return report;
         }
-
-        private async Task<CakeReport> Run()
+        catch (Exception ex)
         {
-            try
-            {
-                var report = await Engine.RunTargetAsync(Context, strategy, Settings);
-                printer.Write(report);
-
-                return report;
-            }
-            catch (Exception ex)
-            {
-                Context.Error(ex);
-                Environment.Exit(1);
-                return null;
-            }
+            Context.Error(ex);
+            Environment.Exit(1);
+            return null;
         }
     }
 }

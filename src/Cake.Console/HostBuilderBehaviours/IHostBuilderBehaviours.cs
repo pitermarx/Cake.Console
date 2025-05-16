@@ -1,7 +1,6 @@
-namespace Cake.Console.HostBuilderBehaviours
+namespace Cake.Console.HostBuilderBehaviours;
+
+internal interface IHostBuilderBehaviour
 {
-    internal interface IHostBuilderBehaviour
-    {
-        void Run();
-    }
+    void Run();
 }

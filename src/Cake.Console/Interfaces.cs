@@ -1,8 +1,15 @@
 using Cake.Core.Packaging;
 
-namespace Cake.Console
+namespace Cake.Console;
+
+public interface IWorkingDirectory
 {
-    public interface IWorkingDirectory { string WorkingDirectory { get; } }
-    public interface ICakeToolReference { PackageReference Reference { get; } }
-    public interface ICakeTasks { }
+    string WorkingDirectory { get; }
 }
+
+public interface ICakeToolReference
+{
+    PackageReference Reference { get; }
+}
+
+public interface ICakeTasks { }

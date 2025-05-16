@@ -3,7 +3,7 @@
   <!-- Set these variables in the cli command /p:CakeVersion=3.0.0 /p:Version=3.0.0.1-->
   <PropertyGroup>
     <CakeVersion>UNDEFINED</CakeVersion>
-    <Version>UNDEFINED</Version>
+    <VersionPrefix>UNDEFINED</VersionPrefix>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -14,15 +14,13 @@
     <PackageProjectUrl>https://github.com/pitermarx/Cake.Console</PackageProjectUrl>
     <Authors>pitermarx</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <AssemblyVersion>$(Version)</AssemblyVersion>
-    <PackageVersion>$(Version)</PackageVersion>
-    <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <RollForward>LatestMajor</RollForward>
+    <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
