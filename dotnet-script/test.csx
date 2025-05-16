@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet-script
-#r "nuget: cake.console, 3.0.0.1"
+#r "nuget: cake.console, 3.0.0.2"
 
 using Cake.Core;
 using Cake.Common;

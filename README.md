@@ -13,12 +13,12 @@ Create a new project referencing Cake.Console. It will look something like this
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cake.Console" Version="3.0.0" />
+    <PackageReference Include="Cake.Console" Version="4.0.0" />
   </ItemGroup>
 </Project>
 ```
