@@ -70,7 +70,6 @@ host.Task("Test")
         {
             try
             {
-
                 var s = new VerifySettings();
                 if (c.GitHubActions().IsRunningOnGitHubActions)
                 {
@@ -78,6 +77,7 @@ host.Task("Test")
                 }
                 s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
                 s.ScrubLinesWithReplace(l => l.Replace(pwd, "{CurrentDirectory}"));
+                s.ScrubLinesWithReplace(l => l.Replace("\u001b[1m","").Replace("\u001b[0m", ""));
                 s.ScrubLinesWithReplace(l =>
                     new Regex(@"Details: 1\.2\.3\+.*").Replace(l, "Details: 1.2.3+{Hash}")
                 );
