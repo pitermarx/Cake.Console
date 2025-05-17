@@ -65,14 +65,14 @@ host.Task("Test")
             "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello",
         };
         
-        List<Exception> aggException = new();
+        List<Exception> aggException = [];
         foreach (var t in tests)
         {
             try
             {
 
                 var s = new VerifySettings();
-                if (host.Context.GitHubActions().IsRunningOnGitHubActions)
+                if (c.GitHubActions().IsRunningOnGitHubActions)
                 {
                     s.DisableDiff();
                 }
@@ -87,18 +87,15 @@ host.Task("Test")
             catch (Exception e)
             {
                 aggException.Add(e);
-                host.Context.Error(e.Message);
+                c.Error(e.Message);
             }
         }
         
         if (aggException.Count > 0)
         {
+            await c.GitHubActions().Commands.UploadArtifact(DirectoryPath.FromString("build\\snapshots"), "snapshots");
             throw new AggregateException("Test failed", aggException);
         }
-    })
-    .OnError(() =>
-    {
-        host.Context.GitHubActions().Commands.UploadArtifact(DirectoryPath.FromString("build\\snapshots"), "snapshots");
     });
 
 host.Task("Pack")
@@ -151,7 +148,6 @@ string Run(string cmd)
     using Process process = new();
     process.StartInfo = new ("dotnet", $"{dll} {cmd}")
     {
-        RedirectStandardInput = true,
         RedirectStandardOutput = true,
         RedirectStandardError = true,
         UseShellExecute = false,
@@ -166,18 +162,6 @@ string Run(string cmd)
     output += process.StandardError.ReadToEnd();
 
     return output;
-
-    var settings = new ProcessSettings()
-        .SetRedirectStandardOutput(true)
-        .SetRedirectStandardError(true)
-        .WithArguments(a => a.Append($"{dll} {cmd}"));
-
-    //settings.EnvironmentVariables = new Dictionary<string, string>{ ["NO_COLOR"] = "true" };
-    
-    //using var process = host.Context.ProcessRunner.Start("dotnet", settings);
-    //var t = string.Join("\n", process.GetStandardOutput());
-    //var err = string.Join("\n", process.GetStandardError());
-    //return t + err;
 }
 
 void Delete(params string[] globs)
