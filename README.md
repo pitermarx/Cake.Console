@@ -4,7 +4,7 @@
 
 An alternative to [Cake.Frosting](https://cakebuild.net/docs/running-builds/runners/cake-frosting)
 
-https://blog.pitermarx.com/2021/09/presenting-cake-console/
+https://blog.pitermarx.com/2021/09/presenting-cake.console/
 
 ## Usage
 
