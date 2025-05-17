@@ -65,21 +65,40 @@ host.Task("Test")
             "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello",
         };
         
+        List<Exception> aggException = new();
         foreach (var t in tests)
         {
-            var s = new VerifySettings();
-            if (host.Context.GitHubActions().IsRunningOnGitHubActions)
+            try
             {
-                s.DisableDiff();
-            }
-            s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
-            s.ScrubLinesWithReplace(l => l.Replace(pwd, "{CurrentDirectory}"));
-            s.ScrubLinesWithReplace(l =>
-                new Regex(@"Details: 1\.2\.3\+.*").Replace(l, "Details: 1.2.3+{Hash}")
-            );
-            var result = Run(t);
+
+                var s = new VerifySettings();
+                if (host.Context.GitHubActions().IsRunningOnGitHubActions)
+                {
+                    s.DisableDiff();
+                }
+                s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
+                s.ScrubLinesWithReplace(l => l.Replace(pwd, "{CurrentDirectory}"));
+                s.ScrubLinesWithReplace(l =>
+                    new Regex(@"Details: 1\.2\.3\+.*").Replace(l, "Details: 1.2.3+{Hash}")
+                );
+                var result = Run(t);
                 await new InnerVerifier("build\\snapshots", $"Test_{t.Replace(" ", "_")}", s).Verify(result);
+            }
+            catch (Exception e)
+            {
+                aggException.Add(e);
+                host.Context.Error(e.Message);
+            }
         }
+        
+        if (aggException.Count > 0)
+        {
+            throw new AggregateException("Test failed", aggException);
+        }
+    })
+    .OnError(() =>
+    {
+        host.Context.GitHubActions().Commands.UploadArtifact(DirectoryPath.FromString("build\\snapshots"), "snapshots");
     });
 
 host.Task("Pack")
