@@ -156,7 +156,8 @@ string Run(string cmd)
         RedirectStandardError = true,
         UseShellExecute = false,
         CreateNoWindow = true,
-        WorkingDirectory = Environment.CurrentDirectory
+        WorkingDirectory = Environment.CurrentDirectory,
+        Environment = { {"NO_COLOR", "true"} }
     };
 
     process.Start();
