@@ -1,16 +1,15 @@
-﻿
-PrintArgs
+﻿PrintArgs
 
 Task1
 
 Task2
 
 TaskC
-└─TaskB
-   └─TaskA
+��TaskB
+   ��TaskA
 
 TaskD
-└─TaskB
-   └─TaskA
+��TaskB
+   ��TaskA
 
 OK

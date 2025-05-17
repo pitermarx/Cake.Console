@@ -1,5 +1,4 @@
-﻿
-Task                          Description
+﻿Task                          Description
 ================================================================================
 PrintArgs                     
 Task1                         

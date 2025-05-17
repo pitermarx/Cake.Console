@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics;
+using System.Text.RegularExpressions;
 using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Diagnostics;
@@ -77,7 +78,7 @@ host.Task("Test")
         foreach (var t in tests)
         {
             var result = Run(t);
-            await new InnerVerifier("build\\snapshots", $"Test_{t.Replace(" ", "_")}", s).Verify(result);
+                await new InnerVerifier("build\\snapshots", $"Test_{t.Replace(" ", "_")}", s).Verify(result);
         }
     });
 
@@ -126,17 +127,37 @@ string Run(string cmd)
         .Context.GetFiles("src/Cake.Console.Tests/bin/Release/*/Cake.Console.Tests.dll")
         .First();
     host.Context.Information($"Running: dotnet {dll} {cmd}");
+    
+    // run cmd and get stdout/stderr
+    using Process process = new();
+    process.StartInfo = new ("dotnet", $"{dll} {cmd}")
+    {
+        RedirectStandardInput = true,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        UseShellExecute = false,
+        CreateNoWindow = true,
+        WorkingDirectory = Environment.CurrentDirectory
+    };
+
+    process.Start();
+    
+    var output = process.StandardOutput.ReadToEnd().Trim();
+    output += process.StandardError.ReadToEnd();
+
+    return output;
+
     var settings = new ProcessSettings()
         .SetRedirectStandardOutput(true)
         .SetRedirectStandardError(true)
         .WithArguments(a => a.Append($"{dll} {cmd}"));
 
-    settings.EnvironmentVariables = new Dictionary<string, string>{ ["NO_COLOR"] = "true" };
+    //settings.EnvironmentVariables = new Dictionary<string, string>{ ["NO_COLOR"] = "true" };
     
-    using var process = host.Context.ProcessRunner.Start("dotnet", settings);
-    var t = string.Join("\n", process.GetStandardOutput());
-    var err = string.Join("\n", process.GetStandardError());
-    return t + err;
+    //using var process = host.Context.ProcessRunner.Start("dotnet", settings);
+    //var t = string.Join("\n", process.GetStandardOutput());
+    //var err = string.Join("\n", process.GetStandardError());
+    //return t + err;
 }
 
 void Delete(params string[] globs)
