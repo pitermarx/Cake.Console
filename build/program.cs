@@ -43,8 +43,8 @@ host.Task("Test")
     .IsDependentOn("Build")
     .Does(async c =>
     {
-        var tests = new[]
-        {
+        string[] tests =
+        [
             "unknown",
             "host",
             "cli",
@@ -62,8 +62,8 @@ host.Task("Test")
             "cli --tree",
             "cli --help",
             "cli -h",
-            "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello",
-        };
+            "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello"
+        ];
         
         List<Exception> aggException = [];
         foreach (var t in tests)
@@ -93,7 +93,6 @@ host.Task("Test")
         
         if (aggException.Count > 0)
         {
-            await c.GitHubActions().Commands.UploadArtifact(DirectoryPath.FromString("build\\snapshots"), "snapshots");
             throw new AggregateException("Test failed", aggException);
         }
     });
@@ -116,7 +115,9 @@ host.Task("Pack")
 
 host.Task("Push")
     .WithCriteria(c =>
-        c.GitHubActions().IsRunningOnGitHubActions && c.HasEnvironmentVariable("NUGET_API_KEY")
+        c.GitHubActions().IsRunningOnGitHubActions && 
+        !c.GitHubActions().Environment.PullRequest.IsPullRequest && 
+        c.HasEnvironmentVariable("NUGET_API_KEY")
     )
     .IsDependentOn("Pack")
     .Does(c =>
