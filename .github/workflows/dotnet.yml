@@ -18,7 +18,10 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Build
-      run: dotnet run --project .\build\build.csproj -- -v=Diagnostic
+      run: |
+        dotnet run --project .\build\build.csproj -- -v=Diagnostic
+        dotnet tool restore
+        dotnet tool run dotnet-verify review -w .\build\snapshots\
       env:
         PUSH_SOURCE: https://api.nuget.org/v3/index.json
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
