@@ -131,6 +131,8 @@ string Run(string cmd)
         .SetRedirectStandardError(true)
         .WithArguments(a => a.Append($"{dll} {cmd}"));
 
+    settings.EnvironmentVariables["NO_COLOR"] = "true";
+    
     using var process = host.Context.ProcessRunner.Start("dotnet", settings);
     var t = string.Join("\n", process.GetStandardOutput());
     var err = string.Join("\n", process.GetStandardError());
