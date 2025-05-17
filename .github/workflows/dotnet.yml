@@ -28,3 +28,6 @@ jobs:
         DOTNET_CLI_TELEMETRY_OPTOUT: true
         VersionPrefix: 5.0.0
         ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_RUN_ID: ${{ env.GITHUB_RUN_ID }}
+        ACTIONS_RUNTIME_URL: ${{ env.ACTIONS_RUNTIME_URL }}
