@@ -34,7 +34,7 @@ jobs:
       env:
         PUSH_SOURCE: https://api.nuget.org/v3/index.json
         NUGET_API_KEY: ${{steps.login.outputs.NUGET_API_KEY}} 
-        VersionPrefix: 6.0.0-pre1
+        VersionPrefix: 6.0.0
 
     - uses: actions/upload-artifact@v4
       with:

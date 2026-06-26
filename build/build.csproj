@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -8,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cake.Console" Version="5.0.0-pre" />
+    <PackageReference Include="Cake.Console" Version="6.0.0-pre1" />
     <PackageReference Include="verify" Version="31.20.0" />
   </ItemGroup>
 </Project>
