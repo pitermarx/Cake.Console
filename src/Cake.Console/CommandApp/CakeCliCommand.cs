@@ -58,8 +58,7 @@ internal sealed class CakeCliCommand(
         [Description("Displays additional information about Cake.")]
         public bool Info { get; set; }
     }
-
-    public override int Execute([NotNull] CommandContext context, [NotNull] Settings settings)
+    protected override int Execute(CommandContext context, Settings settings, CancellationToken cancellation)
     {
         if (settings.Info)
         {
