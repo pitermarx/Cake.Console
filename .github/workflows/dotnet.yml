@@ -22,7 +22,7 @@ jobs:
       env:
         PUSH_SOURCE: https://api.nuget.org/v3/index.json
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        VersionPrefix: 5.0.0
+        VersionPrefix: 6.0.0-pre1
     - uses: actions/upload-artifact@v4
       with:
         name: snaps

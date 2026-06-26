@@ -32,8 +32,7 @@ host.Task("Build")
         {
             Configuration = config,
             NoLogo = true,
-            ArgumentCustomization = builder =>
-                builder.Append($"/p:VersionPrefix={version}"),
+            ArgumentCustomization = builder => builder.Append($"/p:VersionPrefix={version}"),
         };
         c.DotNetBuild(testProj, sett);
     });
@@ -62,9 +61,9 @@ host.Task("Test")
             "cli --tree",
             "cli --help",
             "cli -h",
-            "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello"
+            "cli --target=printargs --arg1=1 --arg2=x --super-long-arg=super-long-value,hello",
         ];
-        
+
         List<Exception> aggException = [];
         foreach (var t in tests)
         {
@@ -77,12 +76,16 @@ host.Task("Test")
                 }
                 s.ScrubLinesContaining(StringComparison.OrdinalIgnoreCase, "00:00:0");
                 s.ScrubLinesWithReplace(l => l.Replace(pwd, "{CurrentDirectory}"));
-                s.ScrubLinesWithReplace(l => l.Replace("\u001b[1m","").Replace("\u001b[0m", ""));
+                s.ScrubLinesWithReplace(l => l.Replace("\u001b[1m", "").Replace("\u001b[0m", ""));
                 s.ScrubLinesWithReplace(l =>
                     new Regex(@"Details: 1\.2\.3\+.*").Replace(l, "Details: 1.2.3+{Hash}")
                 );
                 var result = Run(t);
-                await new InnerVerifier("build\\snapshots", $"Test_{t.Replace(" ", "_")}", s).Verify(result);
+                await new InnerVerifier(
+                    "build\\snapshots",
+                    $"Test_{t.Replace(" ", "_")}",
+                    s
+                ).Verify(result);
             }
             catch (Exception e)
             {
@@ -115,9 +118,9 @@ host.Task("Pack")
 
 host.Task("Push")
     .WithCriteria(c =>
-        c.GitHubActions().IsRunningOnGitHubActions && 
-        !c.GitHubActions().Environment.PullRequest.IsPullRequest && 
-        c.HasEnvironmentVariable("NUGET_API_KEY")
+        c.GitHubActions().IsRunningOnGitHubActions
+        && !c.GitHubActions().Environment.PullRequest.IsPullRequest
+        && c.HasEnvironmentVariable("NUGET_API_KEY")
     )
     .IsDependentOn("Pack")
     .Does(c =>
@@ -144,21 +147,21 @@ string Run(string cmd)
         .Context.GetFiles("src/Cake.Console.Tests/bin/Release/*/Cake.Console.Tests.dll")
         .First();
     host.Context.Information($"Running: dotnet {dll} {cmd}");
-    
+
     // run cmd and get stdout/stderr
     using Process process = new();
-    process.StartInfo = new ("dotnet", $"{dll} {cmd}")
+    process.StartInfo = new("dotnet", $"{dll} {cmd}")
     {
         RedirectStandardOutput = true,
         RedirectStandardError = true,
         UseShellExecute = false,
         CreateNoWindow = true,
         WorkingDirectory = Environment.CurrentDirectory,
-        Environment = { {"NO_COLOR", "true"} }
+        Environment = { { "NO_COLOR", "true" } },
     };
 
     process.Start();
-    
+
     var output = process.StandardOutput.ReadToEnd().Trim();
     output += process.StandardError.ReadToEnd();
 
